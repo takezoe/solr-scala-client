@@ -17,10 +17,10 @@ This is based on the SolrJ and provides optimal interface for Scala.
 
     // query
     val result: List[Map[String, Any]] =
-      client.query("*:*")
+      client.query("name:%name%")
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
-        .getResult
+        .getResult(Map("name" -> "ThinkPad"))
 
     result.foreach { doc: Map[String, Any] =>
       println("id: " + doc("id"))
@@ -36,4 +36,3 @@ TODO
 * Mapping document to case class
 * Flexible configuration to SolrServer
 * Facet search
-* Query parameter binding via place holder
