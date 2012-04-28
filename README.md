@@ -33,7 +33,6 @@ solr-scala-client is not released yet. It's still under development.
 TODO
 --------
 
-* Registering and deleting document
 * Mapping document to case class
 * Flexible configuration to SolrServer
 * Facet search
