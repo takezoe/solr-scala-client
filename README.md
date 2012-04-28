@@ -11,8 +11,8 @@ This is based on the SolrJ and provides optimal interface for Scala.
     // register
     client
       .add(Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
-      .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
-      .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
+      .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X220"))
+      .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X121e"))
     .commit
 
     // query
