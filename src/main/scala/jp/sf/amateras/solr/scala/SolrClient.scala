@@ -36,10 +36,13 @@ class AutoQuery(server: SolrServer, query: String) {
     this
   }
 
-  def getResult(): List[SolrDocument] = {
-    def toList(docList: SolrDocumentList): List[SolrDocument] = {
+  def getResult(): List[Map[String, Any]] = {
+    def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
-        docList.get(i)
+        val doc = docList.get(i)
+        doc.getFieldNames().asScala.map { key =>
+          (key, doc.getFieldValue(key))
+        }.toMap
       }).toList
     }
 
@@ -62,20 +65,20 @@ class AutoQuery(server: SolrServer, query: String) {
 
 }
 
-//object Test extends App {
-//
-//  import SolrQuery.ORDER
-//
-//  val client = new SolrClient("http://localhost:8983/solr")
-//  client.query("*:*")
-//        .fields("id", "manu", "name")
-//        .groupBy("manu")
-//        .sortBy("id", ORDER.asc)
-//        .getResult.foreach { doc =>
-//    println(doc.getFieldValue("id"))
-//    println(doc.getFieldValue("manu"))
-//    println(doc.getFieldValue("name"))
-//    println("--")
-//  }
-//
-//}
+object Test extends App {
+
+  import SolrQuery.ORDER
+
+  val client = new SolrClient("http://localhost:8983/solr")
+  client.query("*:*")
+        .fields("id", "manu", "name")
+        .groupBy("manu")
+        .sortBy("id", ORDER.asc)
+        .getResult.foreach { doc =>
+
+    println("id: " + doc("id"))
+    println("  manu: " + doc("manu"))
+    println("  name: " + doc("name"))
+  }
+
+}
