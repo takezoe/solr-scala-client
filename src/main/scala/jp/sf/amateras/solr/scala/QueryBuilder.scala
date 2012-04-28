@@ -7,7 +7,7 @@ import org.apache.solr.common.SolrDocumentList
 
 class QueryBuilder(server: SolrServer, query: String) {
 
-  val solrQuery = new SolrQuery(query)
+  val solrQuery = new SolrQuery()
 
   def fields(fields: String*): QueryBuilder = {
     fields.foreach { field =>
@@ -27,7 +27,8 @@ class QueryBuilder(server: SolrServer, query: String) {
     this
   }
 
-  def getResult(): List[Map[String, Any]] = {
+  def getResult(params: Map[String, Any] = Map()): List[Map[String, Any]] = {
+
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
         val doc = docList.get(i)
@@ -36,6 +37,8 @@ class QueryBuilder(server: SolrServer, query: String) {
         }.toMap
       }).toList
     }
+
+    solrQuery.setQuery(new QueryTemplate(query).merge(params))
 
     val response = server.query(solrQuery)
     solrQuery.getParams("group") match {

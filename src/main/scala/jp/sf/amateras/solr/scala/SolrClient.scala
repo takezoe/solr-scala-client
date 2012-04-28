@@ -22,7 +22,7 @@ class SolrClient(url: String) {
    *   client.query("*:*")
    *         .fields("id", "manu", "name")
    *         .sortBy("id", Order.asc)
-   *         .getResult
+   *         .getResult()
    * }}}
    */
   def query(query: String): QueryBuilder = new QueryBuilder(server, query)
@@ -58,7 +58,9 @@ class SolrClient(url: String) {
   /**
    * Delete documents by the given query.
    */
-  def deleteByQuery(query: String): Unit = server.deleteByQuery(query)
+  def deleteByQuery(query: String, params: Map[String, Any] = Map()): Unit = {
+    server.deleteByQuery(new QueryTemplate(query).merge(params))
+  }
 
 }
 
@@ -74,11 +76,10 @@ object Test extends App {
   .commit
 
   // query
-  val result = client.query("*:*")
+  val result = client.query("name:\"%name%\"")
         .fields("id", "manu", "name")
-        .groupBy("manu")
         .sortBy("id", ORDER.asc)
-        .getResult
+        .getResult(Map("name" -> "ThinkPad X201s"))
 
   result.foreach { doc =>
     println("id: " + doc("id"))
