@@ -13,7 +13,7 @@ This is based on the SolrJ and provides optimal interface for Scala.
       .add(Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
       .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X220"))
       .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X121e"))
-    .commit
+      .commit
 
     // query
     val result: List[Map[String, Any]] =
