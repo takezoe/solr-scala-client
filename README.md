@@ -36,3 +36,4 @@ TODO
 * Mapping document to case class
 * Flexible configuration to SolrServer
 * Facet search
+* Query parameter binding via place holder
