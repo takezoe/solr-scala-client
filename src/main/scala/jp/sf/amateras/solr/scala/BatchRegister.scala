@@ -5,13 +5,7 @@ import org.apache.solr.common.SolrInputDocument
 
 class BatchRegister(server: SolrServer, docs: Map[String, Any]*){
 
-  docs.foreach { doc =>
-    val solrDoc = new SolrInputDocument
-    doc.map { case (key, value) =>
-      solrDoc.addField(key, value)
-    }
-    server.add(solrDoc)
-  }
+  add(docs: _*)
 
   def add(docs: Map[String, Any]*): BatchRegister = {
     docs.foreach { doc =>
