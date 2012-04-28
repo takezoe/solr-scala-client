@@ -4,7 +4,7 @@ solr-scala-client
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
 This is based on the SolrJ and provides optimal interface for Scala.
 
-    import jp.sf.amateras.solr.scala
+    import jp.sf.amateras.solr.scala._
 
     val client = new SolrClient("http://localhost:8983/solr")
 
