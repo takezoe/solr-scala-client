@@ -76,7 +76,7 @@ object Test extends App {
   .commit
 
   // query
-  val result = client.query("name:\"%name%\"")
+  val result = client.query("name:%name%")
         .fields("id", "manu", "name")
         .sortBy("id", ORDER.asc)
         .getResult(Map("name" -> "ThinkPad X201s"))
