@@ -8,6 +8,14 @@ This is based on the SolrJ and provides optimal interface for Scala.
 
     val client = new SolrClient("http://localhost:8983/solr")
 
+    // register
+    client
+      .add(Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
+      .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
+      .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
+    .commit
+
+    // query
     val result: List[Map[String, Any]] =
       client.query("*:*")
         .fields("id", "manu", "name")
