@@ -1,6 +1,6 @@
 package jp.sf.amateras.solr.scala
 
-class QueryTemplate(query: String) {
+private[scala] class QueryTemplate(query: String) {
 
   def merge(params: Map[String, Any]): String = {
     var result = query
