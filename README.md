@@ -4,6 +4,14 @@ solr-scala-client
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
 This is based on the SolrJ and provides optimal interface for Scala.
 
+Add the following dependency into your build.sbt to use solr-scala-client.
+
+    resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
+
+    libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.1"
+
+This is a simplest example to show usage of solr-scala-client.
+
     import jp.sf.amateras.solr.scala._
 
     val client = new SolrClient("http://localhost:8983/solr")
@@ -36,3 +44,9 @@ TODO
 * Mapping document to case class
 * Flexible configuration to SolrServer
 * Facet search
+
+Release Notes
+--------
+### 0.0.1 - 4 May 2012
+
+* Initial public release.
