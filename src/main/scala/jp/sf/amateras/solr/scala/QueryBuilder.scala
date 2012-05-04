@@ -1,8 +1,10 @@
 package jp.sf.amateras.solr.scala
 
-import scala.collection.JavaConverters._
-import org.apache.solr.client.solrj.SolrServer
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConverters.collectionAsScalaIterableConverter
+
 import org.apache.solr.client.solrj.SolrQuery
+import org.apache.solr.client.solrj.SolrServer
 import org.apache.solr.common.SolrDocumentList
 
 class QueryBuilder(server: SolrServer, query: String) {
@@ -16,7 +18,7 @@ class QueryBuilder(server: SolrServer, query: String) {
     this
   }
 
-  def sortBy(field: String, order: SolrQuery.ORDER): QueryBuilder = {
+  def sortBy(field: String, order: Order): QueryBuilder = {
     solrQuery.addSortField(field, order)
     this
   }
