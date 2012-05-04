@@ -5,7 +5,7 @@ import org.apache.solr.client.solrj.SolrServer
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.common.SolrDocumentList
 
-private[scala] class QueryBuilder(server: SolrServer, query: String) {
+class QueryBuilder(server: SolrServer, query: String) {
 
   val solrQuery = new SolrQuery()
 
