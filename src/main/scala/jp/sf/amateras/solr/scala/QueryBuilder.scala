@@ -9,8 +9,13 @@ import org.apache.solr.common.SolrDocumentList
 
 class QueryBuilder(server: SolrServer, query: String) {
 
-  val solrQuery = new SolrQuery()
+  private val solrQuery = new SolrQuery()
 
+  /**
+   * Sets field names to retrieve by this query.
+   *
+   * @param fields field names
+   */
   def fields(fields: String*): QueryBuilder = {
     fields.foreach { field =>
       solrQuery.addField(field)
@@ -18,17 +23,34 @@ class QueryBuilder(server: SolrServer, query: String) {
     this
   }
 
+  /**
+   * Sets the sorting field name and its order.
+   *
+   * @param field the sorting field name
+   * @param order the sorting order
+   */
   def sortBy(field: String, order: Order): QueryBuilder = {
     solrQuery.addSortField(field, order)
     this
   }
 
+  /**
+   * Sets grouping field names.
+   *
+   * @param grouping field names
+   */
   def groupBy(fields: String*): QueryBuilder = {
     solrQuery.setParam("group", "true")
     solrQuery.setParam("group.field", fields: _*)
     this
   }
 
+  /**
+   * Returns the search result of this query as List[Map[String, Any]].
+   *
+   * @param params the parameter map which would be given to the query
+   * @return the search result
+   */
   def getResult(params: Map[String, Any] = Map()): List[Map[String, Any]] = {
 
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {

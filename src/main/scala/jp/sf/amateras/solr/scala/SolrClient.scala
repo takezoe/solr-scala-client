@@ -8,7 +8,7 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer
  */
 class SolrClient(url: String) {
 
-  val server = new CommonsHttpSolrServer(url)
+  private val server = new CommonsHttpSolrServer(url)
 
   /**
    * Search documents using the given query.
@@ -47,16 +47,23 @@ class SolrClient(url: String) {
 
   /**
    * Add documents and commit them immediatly.
+   *
+   * @param docs documents to register
    */
   def register(docs: Map[String, Any]*): Unit = new BatchRegister(server, docs: _*).commit
 
   /**
    * Delete the document which has a given id.
+   *
+   * @param id the identifier of the document to delete
    */
   def deleteById(id: String): Unit = server.deleteById(id)
 
   /**
    * Delete documents by the given query.
+   *
+   * @param query the solr query to select documents which would be deleted
+   * @param params the parameter map which would be given to the query
    */
   def deleteByQuery(query: String, params: Map[String, Any] = Map()): Unit = {
     server.deleteByQuery(new QueryTemplate(query).merge(params))
