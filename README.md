@@ -47,6 +47,11 @@ TODO
 
 Release Notes
 --------
+### 0.0.2 - Not released yet
+
+* SolrClient accepts initializer for itself
+* Basic authentication support is added as initializer
+
 ### 0.0.1 - 4 May 2012
 
 * Initial public release.
