@@ -38,6 +38,8 @@ This is a simplest example to show usage of solr-scala-client.
 
 solr-scala-client is not released yet. It's still under development.
 
+This project is built continually by [BuildHive](https://buildhive.cloudbees.com/view/My%20Repositories/job/takezoe/job/solr-scala-client/).
+
 TODO
 --------
 
