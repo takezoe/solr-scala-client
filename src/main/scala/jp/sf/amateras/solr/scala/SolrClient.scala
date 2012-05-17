@@ -2,13 +2,17 @@ package jp.sf.amateras.solr.scala
 
 import org.apache.solr.client.solrj.SolrQuery.ORDER
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.UsernamePasswordCredentials
+import org.apache.commons.httpclient.auth.AuthScope;
 
 /**
  * This is the simple Apache Solr client for Scala.
  */
-class SolrClient(url: String) {
+class SolrClient(url: String, initializer: (CommonsHttpSolrServer) => Unit = { server => Unit }) {
 
   private val server = new CommonsHttpSolrServer(url)
+  initializer(server)
 
   /**
    * Search documents using the given query.
