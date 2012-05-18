@@ -2,7 +2,7 @@ package jp.sf.amateras.solr.scala.sample
 
 import _root_.jp.sf.amateras.solr.scala._
 
-class SolrClientSample extends App {
+object SolrClientSample extends App {
 
   val client = new SolrClient("http://localhost:8983/solr", Auth.basic("hoge", "hage"))
 
