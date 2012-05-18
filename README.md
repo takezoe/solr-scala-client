@@ -44,8 +44,9 @@ TODO
 --------
 
 * Mapping document to case class
-* Flexible configuration to SolrServer
-* Facet search
+* Detailed query configuration
+* Flexible configuration to SolrServer (Completed in 0.0.2)
+* Facet search (Completed in 0.0.2)
 
 Release Notes
 --------
