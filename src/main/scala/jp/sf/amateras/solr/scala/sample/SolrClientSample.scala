@@ -4,7 +4,7 @@ import _root_.jp.sf.amateras.solr.scala._
 
 object SolrClientSample extends App {
 
-  val client = new SolrClient("http://localhost:8983/solr", Auth.basic("hoge", "hage"))
+  val client = new SolrClient("http://localhost:8983/solr")
 
   // register
   client
@@ -16,13 +16,24 @@ object SolrClientSample extends App {
   // query
   val result = client.query("name:%name%")
         .fields("id", "manu", "name")
+        .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResult(Map("name" -> "ThinkPad X201s"))
 
-  result.foreach { doc =>
+  println("-- matched documents --")
+  result.documents.foreach { doc =>
     println("id: " + doc("id"))
     println("  manu: " + doc("manu"))
     println("  name: " + doc("name"))
   }
+
+  println("-- facet counts --")
+  result.facetFields.foreach { case (field, counts) =>
+    println("field: " + field)
+    counts.foreach { case (manu, count) =>
+      println("  " + manu + ": " + count)
+    }
+  }
+
 
 }
