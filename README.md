@@ -53,6 +53,8 @@ Release Notes
 
 * Added initializer which configures SolrClient.
 * Added basic authentication support as initializer.
+* Added facet search support.
+* QueryBuilder#getResult became to return QueryResult instead of the list of document maps because it have to return the document list with facet counts..
 
 ### 0.0.1 - 4 May 2012
 
