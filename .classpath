@@ -13,6 +13,9 @@
   <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.slf4j\slf4j-api\jars\slf4j-api-1.6.1.jar" kind="lib"></classpathentry>
   <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.codehaus.woodstox\wstx-asl\jars\wstx-asl-3.2.7.jar" kind="lib"></classpathentry>
   <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.scalatest\scalatest_2.9.2\jars\scalatest_2.9.2-1.7.1.jar" kind="lib"></classpathentry>
+  <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.mockito\mockito-core\jars\mockito-core-1.9.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.hamcrest\hamcrest-core\jars\hamcrest-core-1.1.jar" kind="lib"></classpathentry>
+  <classpathentry path="C:\Users\takezoe\.ivy2\cache\org.objenesis\objenesis\jars\objenesis-1.0.jar" kind="lib"></classpathentry>
   <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"></classpathentry>
   <classpathentry path="bin" kind="output"></classpathentry>
 </classpath>
