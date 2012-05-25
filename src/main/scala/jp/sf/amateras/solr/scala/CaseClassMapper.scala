@@ -33,6 +33,10 @@ private[scala] object CaseClassMapper {
     instance
   }
 
+  /**
+   * Converts the case class to the Map[String, Any].
+   *
+   */
   def class2map(instance: Any): Map[String, Any] = {
     val fields = instance.getClass().getDeclaredFields()
     fields.map { field =>
