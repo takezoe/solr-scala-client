@@ -16,10 +16,6 @@ private[scala] object CaseClassMapper {
     val paramTypes = constructor.getParameterTypes()
     val params = paramTypes.map { getDefaultValue(_).asInstanceOf[java.lang.Object] }
 
-    println("*********************************************************")
-    println(constructor)
-    println("*********************************************************")
-
     val instance = constructor.newInstance(params: _*).asInstanceOf[T]
 
     map.foreach { case (key, value) =>
@@ -35,6 +31,14 @@ private[scala] object CaseClassMapper {
     }
 
     instance
+  }
+
+  def class2map(instance: Any): Map[String, Any] = {
+    val fields = instance.getClass().getDeclaredFields()
+    fields.map { field =>
+      field.setAccessible(true)
+      (field.getName(), field.get(instance))
+    }.toMap
   }
 
   /**

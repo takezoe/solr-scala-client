@@ -12,6 +12,13 @@ class CaseClassMapperSuite extends FunSuite {
     assert(employee.name == "takezoe")
   }
 
+  test("class2map"){
+    val map = CaseClassMapper.class2map(Employee(5678, "takezoe"))
+
+    assert(map("id") == 5678)
+    assert(map("name") == "takezoe")
+  }
+
 }
 
 case class Employee(id: Int, name: String)
