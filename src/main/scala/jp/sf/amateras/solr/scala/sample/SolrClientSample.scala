@@ -8,7 +8,7 @@ object SolrClientSample extends App {
 
   // register
   client
-    .add(Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
+    .add(Map("id"->"001", "manu" -> null, "name" -> "ThinkPad X201s"))
     .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
     .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
   .commit
@@ -23,7 +23,7 @@ object SolrClientSample extends App {
   println("-- matched documents --")
   result1.documents.foreach { doc =>
     println("id: " + doc("id"))
-    println("  manu: " + doc("manu"))
+    println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
     println("  name: " + doc("name"))
   }
 
@@ -41,7 +41,7 @@ object SolrClientSample extends App {
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResultAs[Product](Map("name" -> "ThinkPad X201s"))
+        .getResultAs[Product](Map("name" -> "ThinkPad"))
 
   result2.documents.foreach { product =>
     println(product)
@@ -49,4 +49,4 @@ object SolrClientSample extends App {
 
 }
 
-case class Product(id: String, manu: String, name: String)
+case class Product(id: String, manu: Option[String], name: String)

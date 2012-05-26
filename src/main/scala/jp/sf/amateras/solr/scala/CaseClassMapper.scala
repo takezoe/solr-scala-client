@@ -18,12 +18,16 @@ private[scala] object CaseClassMapper {
 
     val instance = constructor.newInstance(params: _*).asInstanceOf[T]
 
-    map.foreach { case (key, value) =>
+    clazz.getDeclaredFields.foreach { field =>
       try {
-        val field = clazz.getDeclaredField(key)
+        val value = map.get(field.getName).orNull
         if(field != null){
           field.setAccessible(true)
-          field.set(instance, value)
+          if(field.getType() == classOf[Option[_]]){
+            field.set(instance, Option(value))
+          } else {
+            field.set(instance, value)
+          }
         }
       } catch {
         case ex: Exception => // Ignore
@@ -41,7 +45,13 @@ private[scala] object CaseClassMapper {
     val fields = instance.getClass().getDeclaredFields()
     fields.map { field =>
       field.setAccessible(true)
-      (field.getName(), field.get(instance))
+      val value = field.get(instance)
+
+      value match {
+        case Some(x) => (field.getName(), x)
+        case None    => (field.getName(), null)
+        case _       => (field.getName(), value)
+      }
     }.toMap
   }
 
