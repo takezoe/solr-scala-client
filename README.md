@@ -43,7 +43,7 @@ This project has been built continuously by [BuildHive](https://buildhive.cloudb
 TODO
 --------
 
-* Mapping document to case class
+* Mapping document to case class (Completed in 0.0.2)
 * Detailed query configuration
 * Flexible configuration to SolrServer (Completed in 0.0.2)
 * Facet search (Completed in 0.0.2)
@@ -55,7 +55,7 @@ Release Notes
 * Added initializer which configures SolrClient.
 * Added basic authentication support as initializer.
 * Added facet search support.
-* QueryBuilder#getResult became to return QueryResult instead of the list of document maps because it have to return the document list with facet counts.
+* Added case class support as query results and query parameters.
 
 ### 0.0.1 - 4 May 2012
 
