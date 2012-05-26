@@ -1,6 +1,5 @@
 package jp.sf.amateras.solr.scala
 import org.scalatest.FunSuite
-import jp.sf.amateras.solr.scala.sample.CaseClassMapper
 
 class CaseClassMapperSuite extends FunSuite {
 

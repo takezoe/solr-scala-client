@@ -64,7 +64,7 @@ class QueryBuilder(server: SolrServer, query: String) {
    * @param params the parameter map which would be given to the query
    * @return the search result
    */
-  def getResult(params: Map[String, Any] = Map()): QueryResult = {
+  def getResultAsMap(params: Map[String, Any] = Map()): MapQueryResult = {
 
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
@@ -97,7 +97,20 @@ class QueryBuilder(server: SolrServer, query: String) {
         field.getValues().asScala.map { value => (value.getName(), value.getCount()) }.toMap
       )}.toMap
 
-    QueryResult(queryResult, facetResult)
+    MapQueryResult(queryResult, facetResult)
+  }
+
+  def getResultAs[T](params: Map[String, Any] = Map())(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
+    val result = getResultAsMap(params)
+
+    CaseClassQueryResult[T](
+      result.documents.map { doc =>
+        CaseClassMapper.map2class[T](doc)
+      },
+      result.facetFields
+    )
+
   }
 
 }
+

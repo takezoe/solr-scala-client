@@ -1,4 +1,4 @@
-package jp.sf.amateras.solr.scala.sample
+package jp.sf.amateras.solr.scala
 
 /**
  * Provides conversion methods for Map and case class.

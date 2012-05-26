@@ -13,27 +13,40 @@ object SolrClientSample extends App {
     .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
   .commit
 
-  // query
-  val result = client.query("name:%name%")
+  // query (Map)
+  val result1 = client.query("name:%name%")
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResult(Map("name" -> "ThinkPad X201s"))
+        .getResultAsMap(Map("name" -> "ThinkPad X201s"))
 
   println("-- matched documents --")
-  result.documents.foreach { doc =>
+  result1.documents.foreach { doc =>
     println("id: " + doc("id"))
     println("  manu: " + doc("manu"))
     println("  name: " + doc("name"))
   }
 
   println("-- facet counts --")
-  result.facetFields.foreach { case (field, counts) =>
+  result1.facetFields.foreach { case (field, counts) =>
     println("field: " + field)
     counts.foreach { case (manu, count) =>
       println("  " + manu + ": " + count)
     }
   }
 
+  // query (case class)
+  println("-- case class --")
+  val result2 = client.query("name:%name%")
+        .fields("id", "manu", "name")
+        .facetFields("manu")
+        .sortBy("id", Order.asc)
+        .getResultAs[Product](Map("name" -> "ThinkPad X201s"))
+
+  result2.documents.foreach { product =>
+    println(product)
+  }
 
 }
+
+case class Product(id: String, manu: String, name: String)
