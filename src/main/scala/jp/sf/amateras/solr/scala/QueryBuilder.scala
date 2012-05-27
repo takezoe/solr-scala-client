@@ -61,10 +61,10 @@ class QueryBuilder(server: SolrServer, query: String) {
   /**
    * Returns the search result of this query as List[Map[String, Any]].
    *
-   * @param params the parameter map which would be given to the query
+   * @param params the parameter map or case class which would be given to the query
    * @return the search result
    */
-  def getResultAsMap(params: Map[String, Any] = Map()): MapQueryResult = {
+  def getResultAsMap(params: Any = null): MapQueryResult = {
 
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
@@ -73,7 +73,13 @@ class QueryBuilder(server: SolrServer, query: String) {
       }).toList
     }
 
-    solrQuery.setQuery(new QueryTemplate(query).merge(params))
+    val paramMap = params match {
+      case null => Map[String, Any]()
+      case map: Map[_, _] => map.asInstanceOf[Map[String, Any]]
+      case x => CaseClassMapper.class2map(x)
+    }
+
+    solrQuery.setQuery(new QueryTemplate(query).merge(paramMap))
 
     val response = server.query(solrQuery)
 
@@ -100,7 +106,13 @@ class QueryBuilder(server: SolrServer, query: String) {
     MapQueryResult(queryResult, facetResult)
   }
 
-  def getResultAs[T](params: Map[String, Any] = Map())(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
+  /**
+   * Returns the search result of this query as the case class.
+   *
+   * @param params the parameter map or case class which would be given to the query
+   * @return the search result
+   */
+  def getResultAs[T](params: Any = null)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
     val result = getResultAsMap(params)
 
     CaseClassQueryResult[T](

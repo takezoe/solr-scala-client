@@ -41,7 +41,7 @@ object SolrClientSample extends App {
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResultAs[Product](Map("name" -> "ThinkPad"))
+        .getResultAs[Product](Param("ThinkPad"))
 
   result2.documents.foreach { product =>
     println(product)
@@ -50,3 +50,5 @@ object SolrClientSample extends App {
 }
 
 case class Product(id: String, manu: Option[String], name: String)
+
+case class Param(name: String)
