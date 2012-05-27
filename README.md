@@ -25,7 +25,7 @@ This is a simplest example to show usage of solr-scala-client.
 
     // query
     val result: List[Map[String, Any]] =
-      client.query("name:%name%")
+      client.query("name: %name%")
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
         .getResultAsMap(Map("name" -> "ThinkPad"))
@@ -34,6 +34,21 @@ This is a simplest example to show usage of solr-scala-client.
       println("id: " + doc("id"))
       println("  manu: " + doc("manu"))
       println("  name: " + doc("name"))
+    }
+
+It's also possible to use the case class as the search result and parameters instead of Map.
+
+    // query
+    val result: List[Product] =
+      client.query("name: %name%")
+        .fields("id", "manu", "name")
+        .sortBy("id", Order.asc)
+        .getResultAs[Product](Param(name = "ThinkPad"))
+
+    result.documents.foreach { doc: Product =>
+      println("id: " + product.id)
+      println("  manu: " + product.manu)
+      println("  name: " + product.name)
     }
 
 solr-scala-client is not released yet. It's still under development.
