@@ -26,7 +26,7 @@ class SolrClient(url: String, initializer: (CommonsHttpSolrServer) => Unit = { s
    *   client.query("*:*")
    *         .fields("id", "manu", "name")
    *         .sortBy("id", Order.asc)
-   *         .getResult()
+   *         .getResultAsMap()
    * }}}
    */
   def query(query: String): QueryBuilder = new QueryBuilder(server, query)
