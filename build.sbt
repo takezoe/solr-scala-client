@@ -2,7 +2,7 @@ name := "solr-scala-client"
 
 organization := "jp.sf.amateras.solr.scala"
 
-version := "0.0.1"
+version := "0.0.2"
 
 scalaVersion := "2.9.2"
 
@@ -18,5 +18,5 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "1.9.0" % "test"
 )
 
-publishTo := Some(Resolver.ssh("amateras-repo-scp", "shell.sourceforge.jp", "/home/groups/a/am/amateras/htdocs/mvn/")
+publishTo := Some(Resolver.ssh("amateras-repo-scp", "shell.sourceforge.jp", "/home/groups/a/am/amateras/htdocs/mvn/") withPermissions("0664")
   as(System.getProperty("user.name"), new java.io.File(Path.userHome.absolutePath + "/.ssh/id_rsa")))
