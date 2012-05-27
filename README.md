@@ -59,6 +59,7 @@ TODO
 --------
 
 * Detailed query configuration
+* Case class support for update operations
 
 Release Notes
 --------
