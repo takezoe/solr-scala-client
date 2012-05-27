@@ -7,8 +7,8 @@ class BatchRegister(server: SolrServer, docs: Map[String, Any]*){
 
   add(docs: _*)
 
-  def add(docs: Map[String, Any]*): BatchRegister = {
-    docs.foreach { doc =>
+  def add(docs: Any*): BatchRegister = {
+    CaseClassMapper.toMapArray(docs: _*).foreach { doc =>
       val solrDoc = new SolrInputDocument
       doc.map { case (key, value) =>
         solrDoc.addField(key, value)

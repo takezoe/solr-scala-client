@@ -73,13 +73,7 @@ class QueryBuilder(server: SolrServer, query: String) {
       }).toList
     }
 
-    val paramMap = params match {
-      case null => Map[String, Any]()
-      case map: Map[_, _] => map.asInstanceOf[Map[String, Any]]
-      case x => CaseClassMapper.class2map(x)
-    }
-
-    solrQuery.setQuery(new QueryTemplate(query).merge(paramMap))
+    solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
 
     val response = server.query(solrQuery)
 

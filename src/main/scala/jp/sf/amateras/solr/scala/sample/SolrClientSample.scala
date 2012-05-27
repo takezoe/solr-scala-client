@@ -7,11 +7,17 @@ object SolrClientSample extends App {
   val client = new SolrClient("http://localhost:8983/solr")
 
   // register
+//  client
+//    .add(Map("id"->"001", "manu" -> null, "name" -> "ThinkPad X201s"))
+//    .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
+//    .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
+//    .commit
+
   client
-    .add(Map("id"->"001", "manu" -> null, "name" -> "ThinkPad X201s"))
-    .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
-    .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
-  .commit
+    .add(Product("001", None,           "ThinkPad X201s"))
+    .add(Product("002", Some("Lenovo"), "ThinkPad X202"))
+    .add(Product("003", Some("Lenovo"), "ThinkPad X100e"))
+    .commit
 
   // query (Map)
   val result1 = client.query("name:%name%")

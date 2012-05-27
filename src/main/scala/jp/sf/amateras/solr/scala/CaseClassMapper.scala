@@ -55,6 +55,18 @@ private[scala] object CaseClassMapper {
     }.toMap
   }
 
+  def toMap(obj: Any): Map[String, Any] = {
+    obj match {
+      case null => Map[String, Any]()
+      case map: Map[_, _] => map.asInstanceOf[Map[String, Any]]
+      case x => class2map(x)
+    }
+  }
+
+  def toMapArray(objs: Any*): Array[Map[String, Any]] = {
+    objs.map { obj => toMap(obj) }.toArray
+  }
+
   /**
    * Returns the default value for the given type.
    */
