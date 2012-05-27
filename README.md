@@ -8,7 +8,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 
     resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-    libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.1"
+    libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.2"
 
 This is a simplest example to show usage of solr-scala-client.
 
@@ -28,9 +28,9 @@ This is a simplest example to show usage of solr-scala-client.
       client.query("name:%name%")
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
-        .getResult(Map("name" -> "ThinkPad"))
+        .getResultAsMap(Map("name" -> "ThinkPad"))
 
-    result.foreach { doc: Map[String, Any] =>
+    result.documents.foreach { doc: Map[String, Any] =>
       println("id: " + doc("id"))
       println("  manu: " + doc("manu"))
       println("  name: " + doc("name"))
@@ -43,14 +43,11 @@ This project has been built continuously by [BuildHive](https://buildhive.cloudb
 TODO
 --------
 
-* Mapping document to case class (Completed in 0.0.2)
 * Detailed query configuration
-* Flexible configuration to SolrServer (Completed in 0.0.2)
-* Facet search (Completed in 0.0.2)
 
 Release Notes
 --------
-### 0.0.2 - Not released yet
+### 0.0.2 - 27 May 2012
 
 * Added initializer which configures SolrClient.
 * Added basic authentication support as initializer.
