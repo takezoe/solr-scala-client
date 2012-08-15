@@ -73,4 +73,9 @@ class SolrClient(url: String, initializer: (CommonsHttpSolrServer) => Unit = { s
     server.deleteByQuery(new QueryTemplate(query).merge(params))
   }
 
+  /**
+   * Commit the current session.
+   */
+  def commit(): Unit = server.commit
+
 }
