@@ -59,13 +59,13 @@ TODO
 --------
 
 * Detailed query configuration
-* Case class support for update operations (Completed in 0.0.3)
 
 Release Notes
 --------
-### 0.0.3 - Not released yet
+### 0.0.3 - 16 Aug 2012
 
 * Added case class support in update operations.
+* Added commit() method to SolrClient.
 
 ### 0.0.2 - 27 May 2012
 
