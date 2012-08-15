@@ -2,11 +2,11 @@ name := "solr-scala-client"
 
 organization := "jp.sf.amateras.solr.scala"
 
-version := "0.0.2"
+version := "0.0.3"
 
 scalaVersion := "2.9.2"
 
-//crossScalaVersions := Seq("2.8.1", "2.9.1", "2.9.1-1", "2.9.2")
+crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2")
 
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
