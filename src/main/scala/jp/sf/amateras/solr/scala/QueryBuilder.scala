@@ -91,16 +91,12 @@ class QueryBuilder(server: SolrServer, query: String) {
       }
     }
 
-    val facetFields = response.getFacetFields()
-    val facetResult = {
-      if (facetFields == null) {
-        Map.empty[String, Map[String, Long]]
-      } else {
-        facetFields.asScala.map { field => (
+    val facetResult = response.getFacetFields() match {
+      case null => Map.empty[String, Map[String, Long]]
+      case facetFields => facetFields.asScala.map { field => (
           field.getName(),
           field.getValues().asScala.map { value => (value.getName(), value.getCount()) }.toMap
-          )}.toMap
-      }
+      )}.toMap
     }
 
     MapQueryResult(queryResult, facetResult)
