@@ -23,7 +23,7 @@ private[scala] class QueryTemplate(query: String) {
       result = result.replaceAll("%" + key + "%", "\"" + QueryTemplate.escape(value.toString) + "\"")
     }
     params.foreach { case (key, value) =>
-      result = result.replaceAll("\\$" + key + "\\$", "\"" + value.toString + "\"")
+      result = result.replaceAll("\\$" + key + "\\$", value.toString)
     }
     result
   }
