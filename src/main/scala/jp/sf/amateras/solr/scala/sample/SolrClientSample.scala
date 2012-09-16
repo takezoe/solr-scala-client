@@ -20,10 +20,10 @@ object SolrClientSample extends App {
     .commit
 
   // query (Map) without facet search
-  val result1 = client.query("name:%name%")
+  val result1 = client.query("name:?name?")
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad X201s"))
+        .getResultAsMap(Map("name" -> "ThinkPad !X202"))
 
   println("-- matched documents --")
   result1.documents.foreach { doc =>
@@ -37,7 +37,7 @@ object SolrClientSample extends App {
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad X201s"))
+        .getResultAsMap(Map("name" -> "ThinkPad !X201s"))
 
   println("-- matched documents --")
   result2.documents.foreach { doc =>

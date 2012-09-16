@@ -4,7 +4,9 @@ import org.apache.solr.client.solrj.SolrQuery.ORDER
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.UsernamePasswordCredentials
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.auth.AuthScope
+
+import jp.sf.amateras.solr.scala.query.QueryTemplate
 
 /**
  * This is the simple Apache Solr client for Scala.

@@ -7,6 +7,8 @@ import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrServer
 import org.apache.solr.common.SolrDocumentList
 
+import jp.sf.amateras.solr.scala.query.QueryTemplate
+
 class QueryBuilder(server: SolrServer, query: String) {
 
   private val solrQuery = new SolrQuery()

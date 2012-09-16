@@ -1,4 +1,4 @@
-package jp.sf.amateras.solr.scala
+package jp.sf.amateras.solr.scala.query
 import org.scalatest.FunSuite
 
 class QueryTemplateSuite extends FunSuite {
