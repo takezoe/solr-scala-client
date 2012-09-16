@@ -19,10 +19,9 @@ object SolrClientSample extends App {
     .add(Product("003", Some("Lenovo"), "ThinkPad X100e"))
     .commit
 
-  // query (Map)
+  // query (Map) without facet search
   val result1 = client.query("name:%name%")
         .fields("id", "manu", "name")
-        .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResultAsMap(Map("name" -> "ThinkPad X201s"))
 
@@ -32,9 +31,23 @@ object SolrClientSample extends App {
     println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
     println("  name: " + doc("name"))
   }
+    
+  // query (Map) with facet search
+  val result2 = client.query("name:%name%")
+        .fields("id", "manu", "name")
+        .facetFields("manu")
+        .sortBy("id", Order.asc)
+        .getResultAsMap(Map("name" -> "ThinkPad X201s"))
+
+  println("-- matched documents --")
+  result2.documents.foreach { doc =>
+    println("id: " + doc("id"))
+    println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
+    println("  name: " + doc("name"))
+  }
 
   println("-- facet counts --")
-  result1.facetFields.foreach { case (field, counts) =>
+  result2.facetFields.foreach { case (field, counts) =>
     println("field: " + field)
     counts.foreach { case (manu, count) =>
       println("  " + manu + ": " + count)
@@ -43,13 +56,13 @@ object SolrClientSample extends App {
 
   // query (case class)
   println("-- case class --")
-  val result2 = client.query("name:%name%")
+  val result3 = client.query("name:%name%")
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResultAs[Product](Param("ThinkPad"))
 
-  result2.documents.foreach { product =>
+  result3.documents.foreach { product =>
     println(product)
   }
 
