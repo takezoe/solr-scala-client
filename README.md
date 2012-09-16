@@ -24,11 +24,10 @@ This is a simplest example to show usage of solr-scala-client.
       .commit
 
     // query
-    val result: List[Map[String, Any]] =
-      client.query("name: %name%")
-        .fields("id", "manu", "name")
-        .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad"))
+    val result: = client.query("name: %name%")
+      .fields("id", "manu", "name")
+      .sortBy("id", Order.asc)
+      .getResultAsMap(Map("name" -> "ThinkPad"))
 
     result.documents.foreach { doc: Map[String, Any] =>
       println("id: " + doc("id"))
@@ -39,11 +38,10 @@ This is a simplest example to show usage of solr-scala-client.
 It's also possible to use the case class as the search result and parameters instead of Map.
 
     // query
-    val result: List[Product] =
-      client.query("name: %name%")
-        .fields("id", "manu", "name")
-        .sortBy("id", Order.asc)
-        .getResultAs[Product](Param(name = "ThinkPad"))
+    val result = client.query("name: %name%")
+      .fields("id", "manu", "name")
+      .sortBy("id", Order.asc)
+      .getResultAs[Product](Param(name = "ThinkPad"))
 
     result.documents.foreach { doc: Product =>
       println("id: " + product.id)
