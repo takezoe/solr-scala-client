@@ -28,6 +28,13 @@ class ExpressionParseException(cause: Throwable) extends RuntimeException(cause)
 
 object ExpressionParser extends App {
   
+  /**
+   * Parses the given expression and returns the Solr query.
+   * 
+   * @param str the expression
+   * @return the Solr query
+   * @throws ExpressionParseException Failed to parse the given expression.
+   */
   def parse(str: String): String = {
     try {
       visit(new ExpressionParser().parse("(" + str + ")").get)
