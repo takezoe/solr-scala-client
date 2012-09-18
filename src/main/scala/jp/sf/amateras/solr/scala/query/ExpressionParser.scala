@@ -65,13 +65,21 @@ object ExpressionParser {
    */
   def parse(str: String)(implicit parser: ExpressionParser): String = {
     try {
-      visit(parser.parse("(" + str + ")"))
+      visit(parser.parse("(" + normalize(str) + ")"))
     } catch {
       case e => throw new ExpressionParseException(e)
     }
   }
+
+  /**
+   * Converts the full-width space to the half-wide space.
+   */
+  private def normalize(str: String): String = str.replaceAll("　", " ")
   
-  def visit(ast: AST): String = {
+  /**
+   * Visits nodes of the given AST recursive and assembles Solr query.
+   */
+  private def visit(ast: AST): String = {
     ast match {
       case and : ASTAnd  => "(" + visit(and.left) + " AND " + visit(and.right) + ")"
       case or  : ASTOr   => "(" + visit(or.left) + " OR " + visit(or.right) + ")"
