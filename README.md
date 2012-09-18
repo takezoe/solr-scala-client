@@ -91,6 +91,11 @@ TODO
 
 Release Notes
 --------
+### 0.0.5 - Not released yet
+
+* ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
+* Converts the full-width space to the half-width space in the expression before calling ExpressionParser.
+
 ### 0.0.4 - 16 Sep 2012
 
 * Expanding expression to the Solr query by ?VAR_NAME? in SolrClient#query().
