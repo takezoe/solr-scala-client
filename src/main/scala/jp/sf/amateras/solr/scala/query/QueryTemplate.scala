@@ -18,7 +18,7 @@ class QueryTemplate(query: String) {
    * @param params the parameter map which would be merged with this template
    * @return the merged string
    */
-  def merge(params: Map[String, Any]): String = {
+  def merge(params: Map[String, Any])(implicit parser: ExpressionParser): String = {
     var result = query
     params.foreach { case (key, value) =>
       result = result.replaceAll("\\?" + key + "\\?", ExpressionParser.parse(value.toString))

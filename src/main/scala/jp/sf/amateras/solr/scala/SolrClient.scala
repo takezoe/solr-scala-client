@@ -6,12 +6,13 @@ import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.UsernamePasswordCredentials
 import org.apache.commons.httpclient.auth.AuthScope
 
-import jp.sf.amateras.solr.scala.query.QueryTemplate
+import jp.sf.amateras.solr.scala.query._
 
 /**
  * This is the simple Apache Solr client for Scala.
  */
-class SolrClient(url: String, initializer: (CommonsHttpSolrServer) => Unit = { server => Unit }) {
+class SolrClient(url: String, initializer: (CommonsHttpSolrServer) => Unit = { server => Unit })
+                (implicit parser: ExpressionParser = new DefaultExpressionParser()) {
 
   private val server = new CommonsHttpSolrServer(url)
   initializer(server)

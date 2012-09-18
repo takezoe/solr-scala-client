@@ -1,10 +1,15 @@
-package jp.sf.amateras.solr.scala.query;
+package jp.sf.amateras.solr.scala.query
 import scala.util.parsing.combinator.RegexParsers
 
+trait ExpressionParser {
+  def parse(expression: String): AST
+}
+
 /**
- * Parses an expression and assembles Solr query.
+ * The default implementation of ExpressionParser which supports the simple expression
+ * contains operators such as &, | and !.
  */
-class ExpressionParser extends RegexParsers {
+class DefaultExpressionParser extends RegexParsers with ExpressionParser {
   
   def operator: Parser[AST] = chainl1(expression, 
       "&"^^{ op => (left, right) => ASTAnd(left, right)}|
@@ -20,24 +25,47 @@ class ExpressionParser extends RegexParsers {
 
   def literal: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTWord
   
-  def parse(str:String) = parseAll(expression, str)
+  def parse(str:String) = parseAll(expression, str).get
+  
+}
+
+/**
+ * The optional implementation of ExpressionParser which supports Google-like query.
+ */
+class GoogleExpressionParser extends RegexParsers with ExpressionParser {
+  
+  def operator: Parser[AST] = chainl1(expression, 
+      "OR"^^{ op => (left, right) => ASTOr(left, right)}|
+      ""^^{ op => (left, right) => ASTAnd(left, right)}
+  )
+    
+  def expression: Parser[AST] = not|literal|word|"("~>operator<~")"
+  
+  def not: Parser[AST] = "-"~>expression^^ASTNot
+  
+  def word: Parser[AST] = """[^(%|!& \t)]+""".r^^ASTWord
+
+  def literal: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTWord
+  
+  def parse(str:String) = parseAll(expression, str).get
   
 }
 
 class ExpressionParseException(cause: Throwable) extends RuntimeException(cause)
 
-object ExpressionParser extends App {
+object ExpressionParser {
   
   /**
    * Parses the given expression and returns the Solr query.
    * 
    * @param str the expression
+   * @param parser the expression parser (default is [[jp.sf.amateras.solr.scala.query.DefaultExpressionParser]])
    * @return the Solr query
    * @throws ExpressionParseException Failed to parse the given expression.
    */
-  def parse(str: String): String = {
+  def parse(str: String)(implicit parser: ExpressionParser): String = {
     try {
-      visit(new ExpressionParser().parse("(" + str + ")").get)
+      visit(parser.parse("(" + str + ")"))
     } catch {
       case e => throw new ExpressionParseException(e)
     }
@@ -52,5 +80,4 @@ object ExpressionParser extends App {
     }
   }
   
-  println(ExpressionParser.parse("ThinkPad !X201s"))
 }

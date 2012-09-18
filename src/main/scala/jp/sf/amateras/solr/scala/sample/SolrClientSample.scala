@@ -1,9 +1,11 @@
 package jp.sf.amateras.solr.scala.sample
 
 import _root_.jp.sf.amateras.solr.scala._
+import _root_.jp.sf.amateras.solr.scala.query._
 
 object SolrClientSample extends App {
 
+  implicit val parser = new GoogleExpressionParser()
   val client = new SolrClient("http://localhost:8983/solr")
 
   // register
@@ -23,7 +25,7 @@ object SolrClientSample extends App {
   val result1 = client.query("name:?name?")
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad !X202"))
+        .getResultAsMap(Map("name" -> "ThinkPad -X202"))
 
   println("-- matched documents --")
   result1.documents.foreach { doc =>
@@ -37,7 +39,7 @@ object SolrClientSample extends App {
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad !X201s"))
+        .getResultAsMap(Map("name" -> "ThinkPad -X201s"))
 
   println("-- matched documents --")
   result2.documents.foreach { doc =>
