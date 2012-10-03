@@ -122,7 +122,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
       )}.toMap
     }
 
-    MapQueryResult(queryResult, facetResult)
+    MapQueryResult(response.getResults().getNumFound(), queryResult, facetResult)
   }
 
   /**
@@ -135,6 +135,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     val result = getResultAsMap(params)
 
     CaseClassQueryResult[T](
+      result.numFound,
       result.documents.map { doc =>
         CaseClassMapper.map2class[T](doc)
       },
