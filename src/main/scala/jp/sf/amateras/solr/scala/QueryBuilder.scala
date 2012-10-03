@@ -62,6 +62,26 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
   }
 
   /**
+   * Specifies the maximum number of results to return.
+   * 
+   * @param rows number of results
+   */
+  def rows(rows: Int) = {
+    solrQuery.setRows(rows)
+    this
+  }
+    
+  /**
+   * Sets the offset to start at in the result set.
+   * 
+   * @param start zero-based offset
+   */
+  def start(start: Int) = {
+    solrQuery.setStart(start)
+    this
+  }
+
+  /**
    * Returns the search result of this query as List[Map[String, Any]].
    *
    * @param params the parameter map or case class which would be given to the query
