@@ -93,6 +93,7 @@ Release Notes
 
 * ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
 * Converts the full-width space to the half-width space in the expression before calling ExpressionParser.
+* Introduced the SolrServer factory. ```Auth.basic``` moved to ```SolrServerFactory.basicAuth``` and ```SolrServerFactory.dummy``` for unit testing.
 
 ### 0.0.4 - 16 Sep 2012
 
