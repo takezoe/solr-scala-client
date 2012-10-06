@@ -6,6 +6,11 @@ import _root_.jp.sf.amateras.solr.scala.query._
 object SolrClientSample extends App {
 
   implicit val parser = new GoogleExpressionParser()
+  implicit val server = SolrServerFactory.dummy { request =>
+    println(request.getMethod)
+    println(request.getPath)
+    println(request.getParams)
+  }
   val client = new SolrClient("http://localhost:8983/solr")
 
   // register
