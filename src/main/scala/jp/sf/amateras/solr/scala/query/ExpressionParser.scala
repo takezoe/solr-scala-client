@@ -17,13 +17,13 @@ class DefaultExpressionParser extends RegexParsers with ExpressionParser {
       ""^^{ op => (left, right) => ASTAnd(left, right)}
   )
     
-  def expression: Parser[AST] = not|literal|word|"("~>operator<~")"
+  def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
   
   def not: Parser[AST] = "!"~>expression^^ASTNot
   
   def word: Parser[AST] = """[^(%|!& \t)]+""".r^^ASTWord
 
-  def literal: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTWord
+  def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
   
   def parse(str:String) = parseAll(expression, str).get
   
@@ -39,13 +39,13 @@ class GoogleExpressionParser extends RegexParsers with ExpressionParser {
       ""^^{ op => (left, right) => ASTAnd(left, right)}
   )
     
-  def expression: Parser[AST] = not|literal|word|"("~>operator<~")"
+  def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
   
   def not: Parser[AST] = "-"~>expression^^ASTNot
   
   def word: Parser[AST] = """[^(%|!& \t)]+""".r^^ASTWord
 
-  def literal: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTWord
+  def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
   
   def parse(str:String) = parseAll(expression, str).get
   
@@ -81,10 +81,11 @@ object ExpressionParser {
    */
   private def visit(ast: AST): String = {
     ast match {
-      case and : ASTAnd  => "(" + visit(and.left) + " AND " + visit(and.right) + ")"
-      case or  : ASTOr   => "(" + visit(or.left) + " OR " + visit(or.right) + ")"
-      case not : ASTNot  => "NOT " + visit(not.expr)
-      case word: ASTWord => "\"" + QueryUtils.escape(word.value) + "\""
+      case and    : ASTAnd    => "(" + visit(and.left) + " AND " + visit(and.right) + ")"
+      case or     : ASTOr     => "(" + visit(or.left) + " OR " + visit(or.right) + ")"
+      case not    : ASTNot    => "NOT " + visit(not.expr)
+      case phrase : ASTPhrase => "\"" + QueryUtils.escape(phrase.value) + "\""
+      case word   : ASTWord   => QueryUtils.escape(word.value)
     }
   }
   
