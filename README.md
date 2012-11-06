@@ -27,7 +27,7 @@ client
   .commit
 
 // query
-val result: = client.query("name: %name%")
+val result = client.query("name: %name%")
   .fields("id", "manu", "name")
   .sortBy("id", Order.asc)
   .getResultAsMap(Map("name" -> "ThinkPad"))
