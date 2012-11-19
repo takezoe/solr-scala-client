@@ -9,7 +9,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.4"
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.5"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
@@ -89,7 +89,7 @@ TODO
 
 Release Notes
 --------
-### 0.0.5 - Not released yet
+### 0.0.5 - 20 Nov 2012
 
 * ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
 * Converts the full-width space to the half-width space in the expression before calling ExpressionParser.
