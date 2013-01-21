@@ -3,7 +3,7 @@ package jp.sf.amateras.solr.scala.query;
 object QueryUtils {
   
   private lazy val specialCharacters =
-    Set('+', '-', '&', '|',  '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '\\')
+    Set('+', '-', '&', '|',  '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':')
 
   /**
    * Escapes special characters in the solr query.
@@ -14,6 +14,7 @@ object QueryUtils {
   def escape(value: String): String =
     value.toString.map { c =>
       c match {
+        case '\\' => Seq('\\', '\\', '\\', '\\')
         case _ if specialCharacters.contains(c) => Seq('\\', '\\', c)
         case _ => Seq(c)
       }
