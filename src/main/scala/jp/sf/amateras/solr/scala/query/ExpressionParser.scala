@@ -65,7 +65,7 @@ object ExpressionParser {
    */
   def parse(str: String)(implicit parser: ExpressionParser): String = {
     try {
-      visit(parser.parse("(" + normalize(str) + ")"))
+      "(" + visit(parser.parse("(" + normalize(str) + ")")) + ")"
     } catch {
       case e => throw new ExpressionParseException(e)
     }
