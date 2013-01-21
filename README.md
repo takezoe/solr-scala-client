@@ -89,6 +89,10 @@ TODO
 
 Release Notes
 --------
+### 0.0.6 - 22 Jan 2013
+
+* Fixed some ExpressionParser bugs.
+
 ### 0.0.5 - 20 Nov 2012
 
 * ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
