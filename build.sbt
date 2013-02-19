@@ -6,7 +6,7 @@ version := "0.0.6"
 
 scalaVersion := "2.9.2"
 
-crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2")
+crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2", "2.10.0")
 
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
@@ -14,7 +14,7 @@ resolvers += "Local Maven Repository" at "file:///"+Path.userHome.absolutePath+"
 
 libraryDependencies ++= Seq(
   "org.apache.solr" % "solr-solrj" % "3.5.0" % "compile",
-  "org.scalatest" %% "scalatest" % "1.7.1" % "test",
+  "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.mockito" % "mockito-core" % "1.9.0" % "test"
 )
 
