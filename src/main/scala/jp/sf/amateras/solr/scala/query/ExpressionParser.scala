@@ -67,7 +67,7 @@ object ExpressionParser {
     try {
       "(" + visit(parser.parse("(" + normalize(str) + ")")) + ")"
     } catch {
-      case e => throw new ExpressionParseException(e)
+      case e : Throwable => throw new ExpressionParseException(e)
     }
   }
 
