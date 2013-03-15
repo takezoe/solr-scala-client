@@ -1,5 +1,7 @@
 package jp.sf.amateras.solr.scala
 
+import scala.reflect.NameTransformer
+
 /**
  * Provides conversion methods for Map and case class.
  */
@@ -20,7 +22,7 @@ private[scala] object CaseClassMapper {
 
     clazz.getDeclaredFields.foreach { field =>
       try {
-        val value = map.get(field.getName).orNull
+        val value = map.get(NameTransformer.decode(field.getName)).orNull
         if(field != null){
           field.setAccessible(true)
           if(field.getType() == classOf[Option[_]]){
@@ -45,12 +47,10 @@ private[scala] object CaseClassMapper {
     val fields = instance.getClass().getDeclaredFields()
     fields.map { field =>
       field.setAccessible(true)
-      val value = field.get(instance)
-
-      value match {
-        case Some(x) => (field.getName(), x)
-        case None    => (field.getName(), null)
-        case _       => (field.getName(), value)
+      field.get(instance) match {
+        case Some(x) => (NameTransformer.decode(field.getName()), x)
+        case None    => (NameTransformer.decode(field.getName()), null)
+        case x       => (NameTransformer.decode(field.getName()), x)
       }
     }.toMap
   }
