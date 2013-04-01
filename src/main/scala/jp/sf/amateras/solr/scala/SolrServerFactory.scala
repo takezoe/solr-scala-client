@@ -3,9 +3,10 @@ package jp.sf.amateras.solr.scala
 import org.apache.solr.common._
 import org.apache.solr.common.util._
 import org.apache.solr.client.solrj._
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer
-import org.apache.commons.httpclient.auth.AuthScope
-import org.apache.commons.httpclient.UsernamePasswordCredentials
+import org.apache.solr.client.solrj.impl.HttpSolrServer
+import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.UsernamePasswordCredentials
 
 object SolrServerFactory {
   
@@ -18,14 +19,13 @@ object SolrServerFactory {
    * }}}
    */
   def basicAuth(username: String, password: String) = (url: String) => {
-      val server = new CommonsHttpSolrServer(url)
-      
-      val cred = new UsernamePasswordCredentials(username, password)
+      val server = new HttpSolrServer(url)
       val jurl = new java.net.URL(server.getBaseURL())
 
-      val client = server.getHttpClient()
-      client.getState().setCredentials(new AuthScope(jurl.getHost(), jurl.getPort(), AuthScope.ANY_REALM), cred)
-      client.getParams().setAuthenticationPreemptive(true)
+      val client = server.getHttpClient().asInstanceOf[DefaultHttpClient]
+      client.getCredentialsProvider().setCredentials(
+          new AuthScope(jurl.getHost(), jurl.getPort(), AuthScope.ANY_REALM), 
+          new UsernamePasswordCredentials(username, password))
       
       server
   }
@@ -50,6 +50,9 @@ object SolrServerFactory {
 	  response.add("response", new SolrDocumentList())
 	  
 	  response
+	}
+	
+	def shutdown() = {
 	}
   }
   
