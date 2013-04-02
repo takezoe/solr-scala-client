@@ -13,7 +13,18 @@ import jp.sf.amateras.solr.scala.query.QueryTemplate
 class QueryBuilder(server: SolrServer, query: String)(implicit parser: ExpressionParser) {
 
   private val solrQuery = new SolrQuery()
+  private var id = "id"
 
+  /**
+   * Sets the field name of the unique key.
+   * 
+   * @param the field name of the unique key (default is "id").
+   */
+  def id(id: String): QueryBuilder = {
+    this.id = id
+    this
+  }
+    
   /**
    * Sets field names to retrieve by this query.
    *
@@ -80,6 +91,25 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     solrQuery.setStart(start)
     this
   }
+  
+  /**
+   * Configures to retrieve a highlighted snippet.
+   * Highlighted snippet is set as the "highlight" property of the map or the case class.
+   * 
+   * @param prefix the prefix of highlighted ranges.
+   * @param postfix the postfix of highlighted ranges.
+   */
+  def highlight(prefix: String = "", postfix: String = "") = {
+    solrQuery.setHighlight(true)
+    solrQuery.setHighlightSnippets(1)
+    if(prefix.nonEmpty){
+      solrQuery.setHighlightSimplePre(prefix)
+    }
+    if(postfix.nonEmpty){
+      solrQuery.setHighlightSimplePost(postfix)
+    }
+    this
+  }
 
   /**
    * Returns the search result of this query as List[Map[String, Any]].
@@ -89,16 +119,28 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
    */
   def getResultAsMap(params: Any = null): MapQueryResult = {
 
-    def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
-      (for(i <- 0 to docList.size() - 1) yield {
-        val doc = docList.get(i)
-        doc.getFieldNames().asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
-      }).toList
-    }
-
     solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
 
     val response = server.query(solrQuery)
+    val highlight = response.getHighlighting()
+    
+    def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
+      (for(i <- 0 to docList.size() - 1) yield {
+        val doc = docList.get(i)
+        val map = doc.getFieldNames().asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
+        if(solrQuery.getHighlight()){
+          val id = doc.getFieldValue(this.id)
+          if(id != null && highlight.get(id) != null){
+            map + ("highlight" -> response.getHighlighting().get(id).get("content").get(0))
+          } else {
+            map + ("highlight" -> "")
+          }
+        } else {
+          map
+        }
+      }).toList
+    }
+
 
     val queryResult = solrQuery.getParams("group") match {
       case null => {
