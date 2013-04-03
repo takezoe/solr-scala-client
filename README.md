@@ -82,10 +82,9 @@ client.query("name: ?name?").getResultAsMap(Map("name" -> "ThinkPad & X201s"))
   // => name:("ThinkPad" AND "X201s")
 ```
 
-Highlight (since 0.0.7)
+Highlight
 --------
 
-Sine 0.0.7, solr-scala-client supports result highlighting.
 Configure the query to return the highlighted content using ```QueryBuilder#highlight()```.
 The highlighted content is set as the "highlight" property to the Map or the case class.
 
