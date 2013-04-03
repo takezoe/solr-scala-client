@@ -121,8 +121,9 @@ TODO
 
 Release Notes
 --------
-### 0.0.7 - IN DEVELOPMENT
+### 0.0.7 - 4 Apr 2013
 
+* Add build for Scala 2.10
 * Upgrade to SolrJ 4.2.0
 * Support highlighting
 
