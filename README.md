@@ -4,6 +4,8 @@ solr-scala-client
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
 This is based on the SolrJ and provides optimal interface for Scala.
 
+This project has been built continuously by [BuildHive](https://buildhive.cloudbees.com/view/My%20Repositories/job/takezoe/job/solr-scala-client/).
+
 Add the following dependency into your build.sbt to use solr-scala-client.
 
 ```scala
@@ -48,14 +50,12 @@ val result = client.query("name: %name%")
   .sortBy("id", Order.asc)
   .getResultAs[Product](Param(name = "ThinkPad"))
 
-result.documents.foreach { doc: Product =>
+result.documents.foreach { product: Product =>
   println("id: " + product.id)
   println("  manu: " + product.manu)
   println("  name: " + product.name)
 }
 ```
-
-This project has been built continuously by [BuildHive](https://buildhive.cloudbees.com/view/My%20Repositories/job/takezoe/job/solr-scala-client/).
 
 Query Syntax
 --------
@@ -82,6 +82,38 @@ client.query("name: ?name?").getResultAsMap(Map("name" -> "ThinkPad & X201s"))
   // => name:("ThinkPad" AND "X201s")
 ```
 
+Highlight (since 0.0.7)
+--------
+
+Sine 0.0.7, solr-scala-client supports result highlighting.
+Configure the query to return the highlighted content using ```QueryBuilder#highlight()```.
+The highlighted content is set as the "highlight" property to the Map or the case class.
+
+```scala
+val result = client.query("content: Scala")
+  // NOTE: unique key field is required.
+  .fields("id")
+  // Specify the highlighted field, prefix and postfix (prefix and postfix is optional).
+  .highlight("content", "<strong>", "</strong>")
+  .getResultAsMap()
+
+result.documents.foreach { doc: Product =>
+  println("id: " + doc("id"))
+  println(doc("highlight")) // highlighted content is set as the "highlight" property
+}
+```
+solr-scala-client expects that the unique key is "id".
+If your schema has the different field as the unique key, you can specify the unique key name as following:
+
+```scala
+client.query("content: Scala")
+  .id("documentId") // Specify the unique key name
+  .fields("documentId")
+  .highlight("content", "<strong>", "</strong>")
+  .getResultAsMap()
+```
+
+
 TODO
 --------
 
@@ -89,6 +121,11 @@ TODO
 
 Release Notes
 --------
+### 0.0.7 - IN DEVELOPMENT
+
+* Upgrade to SolrJ 4.2.0
+* Support highlighting
+
 ### 0.0.6 - 22 Jan 2013
 
 * Fixed some ExpressionParser bugs.
