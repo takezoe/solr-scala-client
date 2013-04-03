@@ -9,11 +9,13 @@ import org.apache.solr.common.SolrDocumentList
 
 import jp.sf.amateras.solr.scala.query.ExpressionParser
 import jp.sf.amateras.solr.scala.query.QueryTemplate
+import org.apache.solr.client.solrj.response.QueryResponse
 
 class QueryBuilder(server: SolrServer, query: String)(implicit parser: ExpressionParser) {
 
   private val solrQuery = new SolrQuery()
-  private var id = "id"
+  private var id: String = "id"
+  private var highlightField: String = null
 
   /**
    * Sets the field name of the unique key.
@@ -95,12 +97,14 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
   /**
    * Configures to retrieve a highlighted snippet.
    * Highlighted snippet is set as the "highlight" property of the map or the case class.
-   * 
+   *
+   * @param field the highlight field
    * @param prefix the prefix of highlighted ranges.
    * @param postfix the postfix of highlighted ranges.
    */
-  def highlight(prefix: String = "", postfix: String = "") = {
+  def highlight(field: String, prefix: String = "", postfix: String = "") = {
     solrQuery.setHighlight(true)
+    solrQuery.addHighlightField(field)
     solrQuery.setHighlightSnippets(1)
     if(prefix.nonEmpty){
       solrQuery.setHighlightSimplePre(prefix)
@@ -108,6 +112,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     if(postfix.nonEmpty){
       solrQuery.setHighlightSimplePost(postfix)
     }
+    highlightField = field
     this
   }
 
@@ -123,7 +128,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
 
     val response = server.query(solrQuery)
     val highlight = response.getHighlighting()
-    
+
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
         val doc = docList.get(i)
@@ -131,7 +136,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
         if(solrQuery.getHighlight()){
           val id = doc.getFieldValue(this.id)
           if(id != null && highlight.get(id) != null){
-            map + ("highlight" -> response.getHighlighting().get(id).get("content").get(0))
+            map + ("highlight" -> highlight.get(id).get(highlightField).get(0))
           } else {
             map + ("highlight" -> "")
           }
@@ -140,7 +145,6 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
         }
       }).toList
     }
-
 
     val queryResult = solrQuery.getParams("group") match {
       case null => {
