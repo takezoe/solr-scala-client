@@ -85,18 +85,18 @@ client.query("name: ?name?").getResultAsMap(Map("name" -> "ThinkPad & X201s"))
 Highlight
 --------
 
-Configure the query to return the highlighted content using ```QueryBuilder#highlight()```.
+Configure the query to return the highlighted content by ```QueryBuilder#highlight()```.
 The highlighted content is set as the "highlight" property to the Map or the case class.
 
 ```scala
 val result = client.query("content: Scala")
   // NOTE: unique key field is required.
   .fields("id")
-  // Specify the highlighted field, prefix and postfix (prefix and postfix is optional).
+  // Specify the highlighted field, prefix and postfix (prefix and postfix are optional).
   .highlight("content", "<strong>", "</strong>")
   .getResultAsMap()
 
-result.documents.foreach { doc: Product =>
+result.documents.foreach { doc: Map[String, Any] =>
   println("id: " + doc("id"))
   println(doc("highlight")) // highlighted content is set as the "highlight" property
 }
@@ -105,7 +105,7 @@ solr-scala-client expects that the unique key is "id".
 If your schema has the different field as the unique key, you can specify the unique key name as following:
 
 ```scala
-client.query("content: Scala")
+val result = client.query("content: Scala")
   .id("documentId") // Specify the unique key name
   .fields("documentId")
   .highlight("content", "<strong>", "</strong>")
