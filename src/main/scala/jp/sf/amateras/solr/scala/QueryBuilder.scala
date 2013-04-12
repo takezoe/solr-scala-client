@@ -99,13 +99,15 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
    * Highlighted snippet is set as the "highlight" property of the map or the case class.
    *
    * @param field the highlight field
-   * @param prefix the prefix of highlighted ranges.
-   * @param postfix the postfix of highlighted ranges.
+   * @param size the highlight fragment size
+   * @param prefix the prefix of highlighted ranges
+   * @param postfix the postfix of highlighted ranges
    */
-  def highlight(field: String, prefix: String = "", postfix: String = "") = {
+  def highlight(field: String, size: Int = 100, prefix: String = "", postfix: String = "") = {
     solrQuery.setHighlight(true)
     solrQuery.addHighlightField(field)
     solrQuery.setHighlightSnippets(1)
+    solrQuery.setHighlightFragsize(size)
     if(prefix.nonEmpty){
       solrQuery.setHighlightSimplePre(prefix)
     }
@@ -135,7 +137,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
         val map = doc.getFieldNames().asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
         if(solrQuery.getHighlight()){
           val id = doc.getFieldValue(this.id)
-          if(id != null && highlight.get(id) != null){
+          if(id != null && highlight.get(id) != null && highlight.get(id).get(highlightField) != null){
             map + ("highlight" -> highlight.get(id).get(highlightField).get(0))
           } else {
             map + ("highlight" -> "")
