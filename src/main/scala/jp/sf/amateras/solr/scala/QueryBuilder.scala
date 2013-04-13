@@ -133,6 +133,7 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     solrQuery.set("mlt.fl", fields.mkString(","))
     solrQuery.set("mlt.mindf", 1)
     solrQuery.set("mlt.mintf", 1)
+    solrQuery.set("mlt.count", 10)
     recommendFlag = true
     this
   }
