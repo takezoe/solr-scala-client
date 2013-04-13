@@ -168,14 +168,10 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     }
 
     val queryResult = if(recommendFlag){
-      println(response.getResponse)
       val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
       val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
       docs.asScala.map { doc =>
-        val map = doc.getFieldNames.asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
-        println("--")
-        println(map)
-        map
+        doc.getFieldNames.asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
       }.toList
     } else { 
       solrQuery.getParams("group") match {
