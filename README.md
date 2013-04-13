@@ -120,6 +120,10 @@ TODO
 
 Release Notes
 --------
+### 0.0.8 - IN DEVELOPMENT
+
+* Recommendation search
+
 ### 0.0.7 - 4 Apr 2013
 
 * Add build for Scala 2.10
