@@ -6,6 +6,8 @@ import scala.collection.JavaConverters.collectionAsScalaIterableConverter
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrServer
 import org.apache.solr.common.SolrDocumentList
+import org.apache.solr.common.SolrDocument
+import org.apache.solr.common.util.NamedList
 
 import jp.sf.amateras.solr.scala.query.ExpressionParser
 import jp.sf.amateras.solr.scala.query.QueryTemplate
@@ -14,8 +16,10 @@ import org.apache.solr.client.solrj.response.QueryResponse
 class QueryBuilder(server: SolrServer, query: String)(implicit parser: ExpressionParser) {
 
   private val solrQuery = new SolrQuery()
+  
   private var id: String = "id"
   private var highlightField: String = null
+  private var recommendFlag: Boolean = false
 
   /**
    * Sets the field name of the unique key.
@@ -117,6 +121,21 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
     highlightField = field
     this
   }
+  
+  /**
+   * Configure to recommendation search.
+   * If you call this method, the query returns documents similar to the query result instead of them.
+   * 
+   * @param fields field names of recommendation target 
+   */
+  def recommend(fields: String*) = {
+    solrQuery.set("mlt", true)
+    solrQuery.set("mlt.fl", fields.mkString(","))
+    solrQuery.set("mlt.mindf", 1)
+    solrQuery.set("mlt.mintf", 1)
+    recommendFlag = true
+    this
+  }
 
   /**
    * Returns the search result of this query as List[Map[String, Any]].
@@ -148,17 +167,29 @@ class QueryBuilder(server: SolrServer, query: String)(implicit parser: Expressio
       }).toList
     }
 
-    val queryResult = solrQuery.getParams("group") match {
-      case null => {
-        toList(response.getResults())
-      }
-      case _ => {
-        val groupResponse = response.getGroupResponse()
-        groupResponse.getValues().asScala.map { groupCommand =>
-          groupCommand.getValues().asScala.map { group =>
-            toList(group.getResult())
-          }.flatten
-        }.flatten.toList
+    val queryResult = if(recommendFlag){
+      println(response.getResponse)
+      val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
+      val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
+      docs.asScala.map { doc =>
+        val map = doc.getFieldNames.asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
+        println("--")
+        println(map)
+        map
+      }.toList
+    } else { 
+      solrQuery.getParams("group") match {
+        case null => {
+          toList(response.getResults())
+        }
+        case _ => {
+          val groupResponse = response.getGroupResponse()
+          groupResponse.getValues().asScala.map { groupCommand =>
+            groupCommand.getValues().asScala.map { group =>
+              toList(group.getResult())
+            }.flatten
+          }.flatten.toList
+        }
       }
     }
 
