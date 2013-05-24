@@ -4,7 +4,7 @@ organization := "jp.sf.amateras.solr.scala"
 
 version := "0.0.8"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.0"
 
 crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2", "2.10.0")
 
