@@ -21,18 +21,14 @@ private[scala] object CaseClassMapper {
     val instance = constructor.newInstance(params: _*).asInstanceOf[T]
 
     clazz.getDeclaredFields.foreach { field =>
-      try {
-        val value = map.get(NameTransformer.decode(field.getName)).orNull
-        if(field != null){
-          field.setAccessible(true)
-          if(field.getType() == classOf[Option[_]]){
-            field.set(instance, Option(value))
-          } else {
-            field.set(instance, value)
-          }
+      val value = map.get(NameTransformer.decode(field.getName)).orNull
+      if(field != null){
+        field.setAccessible(true)
+        if(field.getType() == classOf[Option[_]]){
+          field.set(instance, Option(value))
+        } else {
+          field.set(instance, value)
         }
-      } catch {
-        case ex: Exception => // Ignore
       }
     }
 
