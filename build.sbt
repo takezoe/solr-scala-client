@@ -14,6 +14,7 @@ resolvers += "Local Maven Repository" at "file:///"+Path.userHome.absolutePath+"
 
 libraryDependencies ++= Seq(
   "org.apache.solr" % "solr-solrj" % "4.2.0" % "compile",
+  "com.ning" % "async-http-client" % "1.7.16" % "compile",
   "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.mockito" % "mockito-core" % "1.9.0" % "test",
   "commons-logging" % "commons-logging" % "1.1" % "runtime"
