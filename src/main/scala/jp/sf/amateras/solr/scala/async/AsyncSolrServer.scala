@@ -21,7 +21,7 @@ class AsyncSolrServer(url: String, httpClient: AsyncHttpClient = new AsyncHttpCl
             queryResponse.setResponse(namedList)
             success(queryResponse)
           } finally {
-            httpClient.close()
+            httpClient.closeAsynchronously()
           }
         }
         
@@ -29,7 +29,7 @@ class AsyncSolrServer(url: String, httpClient: AsyncHttpClient = new AsyncHttpCl
           try {
             failure(t)
           } finally {
-            httpClient.close()
+            httpClient.closeAsynchronously()
           }
         }
       })
