@@ -1,43 +1,26 @@
 package jp.sf.amateras.solr.scala.async
 
 import org.apache.solr.client.solrj.SolrQuery
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncCompletionHandler
-import com.ning.http.client.Response
 import org.apache.solr.client.solrj.impl.XMLResponseParser
 import org.apache.solr.client.solrj.response.QueryResponse
 
-class AsyncSolrServer {
+import com.ning.http.client.AsyncCompletionHandler
+import com.ning.http.client.AsyncHttpClient
+import com.ning.http.client.Response
+
+class AsyncSolrServer(url: String, httpClient: AsyncHttpClient = new AsyncHttpClient()) {
   
-  def query[T](solrQuery: SolrQuery)(callback: () => T) = {
-    println("----")
-    println(solrQuery.getQuery)
-    println("----")
-    
-    new AsyncHttpClient().prepareGet("http://localhost:8983/solr/select?" + solrQuery.getQuery)
-      .execute(new AsyncCompletionHandler[T](){
-        override def onCompleted(response: Response): T = {
+  def query(solrQuery: SolrQuery)(callback: (QueryResponse) => Unit) = {
+    httpClient.prepareGet(url + "/select?q=" + solrQuery.getQuery + "&wt=xml")
+      .execute(new AsyncCompletionHandler[Unit](){
+        override def onCompleted(response: Response): Unit = {
           val parser = new XMLResponseParser
           val namedList = parser.processResponse(response.getResponseBodyAsStream, "UTF-8")
           val queryResponse = new QueryResponse
           queryResponse.setResponse(namedList)
-          
-          println(queryResponse.getResults().getNumFound())
-          
-          callback()
+          callback(queryResponse)
         } 
       })
   }
   
-}
-
-object AsyncTest extends App {
-  val query = new SolrQuery()
-  query.setQuery("*:*")
-  
-  val server = new AsyncSolrServer()
-  server.query(query){() =>
-    println("OK!!")
-  }
- 
 }
