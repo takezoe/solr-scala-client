@@ -9,20 +9,17 @@ import org.apache.solr.client.solrj.request.UpdateRequest
 import java.io.StringWriter
 import AsyncUtils._
 
-class AsyncSolrServer(url: String, implicit val httpClient: AsyncHttpClient = new AsyncHttpClient()) {
+class AsyncSolrServer(url: String, factory: () => AsyncHttpClient = { () => new AsyncHttpClient() }) {
   
-  def query(solrQuery: SolrQuery, success: QueryResponse => Unit, failure: Throwable => Unit) = {
+  def query(solrQuery: SolrQuery, success: QueryResponse => Unit, failure: Throwable => Unit): Unit = {
+    val httpClient = factory()
     httpClient.prepareGet(url + "/select?q=" + URLEncoder.encode(solrQuery.getQuery, "UTF-8") + "&wt=xml")
-      .execute(new CallbackHandler((response: Response) => {
-          try {
-            val parser = new XMLResponseParser
-            val namedList = parser.processResponse(response.getResponseBodyAsStream, "UTF-8")
-            val queryResponse = new QueryResponse
-            queryResponse.setResponse(namedList)
-            success(queryResponse)
-          } finally {
-            httpClient.closeAsynchronously()
-          }
+      .execute(new CallbackHandler(httpClient, (response: Response) => {
+          val parser = new XMLResponseParser
+          val namedList = parser.processResponse(response.getResponseBodyAsStream, "UTF-8")
+          val queryResponse = new QueryResponse
+          queryResponse.setResponse(namedList)
+          success(queryResponse)
         }, failure))
   }
   
@@ -31,10 +28,11 @@ class AsyncSolrServer(url: String, implicit val httpClient: AsyncHttpClient = ne
     req.deleteById(id)
     req.setCommitWithin(1000) // TODO 
     
-    execute(req, new CallbackHandler(defaultSuccessHandler, failure))
+    val httpClient = factory()
+    execute(httpClient, req, new CallbackHandler(httpClient, defaultSuccessHandler, failure))
   }
   
-  private def execute(req: UpdateRequest, handler: AsyncHandler[Unit]): Unit = {
+  private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, handler: AsyncHandler[Unit]): Unit = {
     val writer = new java.io.StringWriter()
     req.writeXML(writer)
     

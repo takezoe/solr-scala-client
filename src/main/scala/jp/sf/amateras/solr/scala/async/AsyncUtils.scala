@@ -6,8 +6,8 @@ import com.ning.http.client.AsyncHttpClient
 
 object AsyncUtils {
   
-  class CallbackHandler(success: Response => Unit, failure: Throwable => Unit)
-                       (implicit httpClient: AsyncHttpClient) extends AsyncCompletionHandler[Unit] {
+  class CallbackHandler(httpClient: AsyncHttpClient, 
+      success: Response => Unit, failure: Throwable => Unit) extends AsyncCompletionHandler[Unit] {
     override def onCompleted(response: Response): Unit = {
       try {
         success(response)

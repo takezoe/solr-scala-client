@@ -12,6 +12,7 @@ object AsyncSolrClientSample extends App {
         .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResultAsMap(Map("name" -> "ThinkPad -X201s"), { result =>
+    println("count: " + result.numFound)
     result.documents.foreach { doc =>
       println("id: " + doc("id"))
       println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
