@@ -8,7 +8,8 @@ import scala.concurrent.Promise
 object AsyncUtils {
   
   class CallbackHandler[T](httpClient: AsyncHttpClient, promise: Promise[T],
-      success: Response => T) extends AsyncCompletionHandler[Unit] {
+      success: Response => T = (x: Response) => ()) extends AsyncCompletionHandler[Unit] {
+    
     override def onCompleted(response: Response): Unit = {
       try {
         promise.success(success(response))

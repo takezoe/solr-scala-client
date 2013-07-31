@@ -1,7 +1,10 @@
 package jp.sf.amateras.solr.scala.async
 
-import jp.sf.amateras.solr.scala.query._
+import scala.concurrent._
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import AsyncUtils._
+import jp.sf.amateras.solr.scala.query._
 
 class AsyncSolrClient(url: String)
     (implicit factory: (String) => AsyncSolrServer = { (url: String) => new AsyncSolrServer(url) }, 
@@ -9,14 +12,19 @@ class AsyncSolrClient(url: String)
   
   val server = factory(url)
   
+  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
+    operations(this) map { result =>
+      server.commit()
+      result
+    }
+  }
+  
   def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(server, query)
   
-//  def deleteById(id: String, failure: Throwable => Unit = defaultFailureHandler): Unit = {
-//    server.deleteById(id, failure)
-//  }
+  def deleteById(id: String): Future[Unit] = server.deleteById(id)
   
-//  def commit(): Unit = {
-//    server.commit()
-//  }
+  def commit(): Future[Unit] = server.commit()
 
+  def shutdown(): Unit = server.shutdown()
+  
 }
