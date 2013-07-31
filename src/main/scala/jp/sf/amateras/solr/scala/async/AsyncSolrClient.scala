@@ -12,6 +12,8 @@ import org.apache.solr.client.solrj.request.UpdateRequest
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest
 import org.apache.solr.client.solrj.response.QueryResponse
 import java.net.URLEncoder
+import scala.util.Success
+import scala.util.Failure
 
 /**
  * Provides the asynchronous and non-blocking API for Solr.
@@ -21,12 +23,14 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
   
   val httpClient: AsyncHttpClient = factory()
   
-//  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
-//    operations(this) map { result =>
-//      server.commit()
-//      result
-//    }
-//  }
+  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
+    val future = operations(this)
+    future.onComplete {
+      case Success(x) => commit
+      case Failure(t) => rollback
+    }
+    future
+  }
   
   def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(httpClient, url, query)
   
@@ -38,14 +42,16 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
     CaseClassMapper.toMap(doc).map { case (key, value) =>
       solrDoc.addField(key, value)
     }
-    //server.add(solrDoc)
+
     val req = new UpdateRequest()
     req.add(solrDoc)
-    
+      
     val promise = Promise[Unit]()
     execute(httpClient, req, promise)
-    
-    promise.future map { _ => commit }
+      
+    withTransaction { _ =>
+      promise.future
+    }
   }
   
   /**
@@ -58,7 +64,9 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
     val promise = Promise[Unit]()
     execute(httpClient, req, promise)
     
-    promise.future map { _ => commit }
+    withTransaction { _ =>
+      promise.future
+    }
   }
   
   /**
