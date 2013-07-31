@@ -52,7 +52,7 @@ class SolrClient(url: String)
   def add(docs: Any*): BatchRegister = new BatchRegister(server, CaseClassMapper.toMapArray(docs: _*): _*)
 
   /**
-   * Add documents and commit them immediatly.
+   * Add documents and commit them immediately.
    *
    * @param docs documents to register
    */
