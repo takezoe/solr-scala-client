@@ -2,15 +2,24 @@ package jp.sf.amateras.solr.scala.async
 
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import AsyncUtils._
 import jp.sf.amateras.solr.scala.query._
+import jp.sf.amateras.solr.scala.CaseClassMapper
+import com.ning.http.client.AsyncHttpClient
+import org.apache.solr.common.SolrInputDocument
+import org.apache.solr.client.solrj.impl.XMLResponseParser
+import org.apache.solr.client.solrj.request.UpdateRequest
+import org.apache.solr.client.solrj.request.AbstractUpdateRequest
+import org.apache.solr.client.solrj.response.QueryResponse
+import java.net.URLEncoder
 
-class AsyncSolrClient(url: String)
-    (implicit factory: (String) => AsyncSolrServer = { (url: String) => new AsyncSolrServer(url) }, 
-            parser: ExpressionParser = new DefaultExpressionParser()) {
+/**
+ * Provides the asynchronous and non-blocking API for Solr.
+ */
+class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new AsyncHttpClient() })
+    (implicit parser: ExpressionParser = new DefaultExpressionParser()) {
   
-  val server = factory(url)
+  val httpClient: AsyncHttpClient = factory()
   
 //  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
 //    operations(this) map { result =>
@@ -19,16 +28,97 @@ class AsyncSolrClient(url: String)
 //    }
 //  }
   
-  def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(server, query)
+  def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(httpClient, url, query)
   
-  def register(doc: Any): Future[Unit] = server.register(doc)
+  /**
+   * Registers the document and commit immediately.
+   */
+  def register(doc: Any): Future[Unit] = {
+    val solrDoc = new SolrInputDocument
+    CaseClassMapper.toMap(doc).map { case (key, value) =>
+      solrDoc.addField(key, value)
+    }
+    //server.add(solrDoc)
+    val req = new UpdateRequest()
+    req.add(solrDoc)
+    
+    val promise = Promise[Unit]()
+    execute(httpClient, req, promise)
+    
+    promise.future map { _ => commit }
+  }
   
-  def deleteById(id: String): Future[Unit] = server.deleteById(id)
+  /**
+   * Deletes the document by id and commit immediately.
+   */
+  def deleteById(id: String): Future[Unit] = {
+    val req = new UpdateRequest()
+    req.deleteById(id)
+    
+    val promise = Promise[Unit]()
+    execute(httpClient, req, promise)
+    
+    promise.future map { _ => commit }
+  }
   
-  def commit(): Future[Unit] = server.commit()
+  /**
+   * Commit the current session.
+   */
+  def commit(): Future[Unit] = {
+    val req = new UpdateRequest()
+    req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true)
+    
+    val promise = Promise[Unit]()
+    execute(httpClient, req, promise)
+    
+    promise.future
+  }
   
-  def rollback(): Future[Unit] = server.rollback()
+  /**
+   * Rolled back the current session.
+   */
+  def rollback(): Future[Unit] = {
+    val req = new UpdateRequest().rollback().asInstanceOf[UpdateRequest]
+    
+    val promise = Promise[Unit]()
+    execute(httpClient, req, promise)
+    
+    promise.future
+  }
 
-  def shutdown(): Unit = server.shutdown()
+  /**
+   * Shutdown AsyncHttpClient.
+   * Call this method before stopping your application.
+   */
+  def shutdown(): Unit = httpClient.closeAsynchronously()
+  
+  /**
+   * Send request using AsyncHttpClient.
+   * Returns the result of asynchronous request to the future world via given Promise.
+   */
+  private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, promise: Promise[Unit]): Unit = {
+    
+    val builder = httpClient.preparePost(url + "/update")
+
+    if(req.getXML != null){
+      // Send XML as request body
+      val writer = new java.io.StringWriter()
+      req.writeXML(writer)
+      builder.addHeader("Content-Type", "text/xml; charset=UTF-8")
+      builder.setBody(writer.toString.getBytes("UTF-8"))
+      
+    } else {
+      // Send URL encoded parameters as request body
+      builder.addHeader("Content-Charset", "UTF-8");
+      builder.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+      import scala.collection.JavaConverters._
+      val params = req.getParams()
+      builder.setBody(params.getParameterNames.asScala.map { name =>
+        URLEncoder.encode(name, "UTF-8") + "=" + URLEncoder.encode(params.get(name), "UTF-8")
+      }.mkString("&"))
+    }
+    
+    builder.execute(new CallbackHandler(httpClient, promise))
+  }
   
 }
