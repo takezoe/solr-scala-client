@@ -12,18 +12,22 @@ class AsyncSolrClient(url: String)
   
   val server = factory(url)
   
-  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
-    operations(this) map { result =>
-      server.commit()
-      result
-    }
-  }
+//  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
+//    operations(this) map { result =>
+//      server.commit()
+//      result
+//    }
+//  }
   
   def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(server, query)
+  
+  def register(doc: Any): Future[Unit] = server.register(doc)
   
   def deleteById(id: String): Future[Unit] = server.deleteById(id)
   
   def commit(): Future[Unit] = server.commit()
+  
+  def rollback(): Future[Unit] = server.rollback()
 
   def shutdown(): Unit = server.shutdown()
   

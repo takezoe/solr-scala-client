@@ -4,6 +4,7 @@ import jp.sf.amateras.solr.scala.async._
 import jp.sf.amateras.solr.scala.Order
 
 import scala.concurrent._
+import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
@@ -11,11 +12,16 @@ object AsyncSolrClientSample extends App {
 
   val client = new AsyncSolrClient("http://localhost:8983/solr")
 
+//  client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo")).onComplete{
+//    case Success(x) => println("registered!")
+//    case Failure(t) => t.printStackTrace()
+//  }
+  
   val future = client.query("name:%name%")
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
-        .getResultAsMap(Map("name" -> "ThinkPad -X201s"))
+        .getResultAsMap(Map("name" -> "ThinkPad X201s"))
             
   future.onComplete {
     case Success(result) => {
@@ -28,5 +34,7 @@ object AsyncSolrClientSample extends App {
     }
     case Failure(t) => t.printStackTrace()
   }
-
+  
+  Await.result(future, Duration.Inf)
+  client.shutdown
 }

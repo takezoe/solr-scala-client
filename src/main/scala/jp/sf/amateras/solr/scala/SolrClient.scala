@@ -79,5 +79,10 @@ class SolrClient(url: String)
    * Commit the current session.
    */
   def commit(): Unit = server.commit
+  
+  /**
+   * Rolled back the current session.
+   */
+  def rollback(): Unit = server.rollback
 
 }

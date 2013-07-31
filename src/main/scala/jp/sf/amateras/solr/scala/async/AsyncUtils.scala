@@ -11,19 +11,11 @@ object AsyncUtils {
       success: Response => T = (x: Response) => ()) extends AsyncCompletionHandler[Unit] {
     
     override def onCompleted(response: Response): Unit = {
-      try {
-        promise.success(success(response))
-      } finally {
-        httpClient.closeAsynchronously()
-      }
+      promise.success(success(response))
     }
         
     override def onThrowable(t: Throwable): Unit = {
-      try {
-        promise.failure(t)
-      } finally {
-        httpClient.closeAsynchronously()
-      }
+      promise.failure(t)
     }
   }
   
