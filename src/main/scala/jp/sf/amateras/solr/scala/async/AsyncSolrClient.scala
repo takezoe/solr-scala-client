@@ -11,9 +11,9 @@ class AsyncSolrClient(url: String)
   
   def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(server, query)
   
-  def deleteById(id: String, failure: Throwable => Unit = defaultFailureHandler): Unit = {
-    server.deleteById(id, failure)
-  }
+//  def deleteById(id: String, failure: Throwable => Unit = defaultFailureHandler): Unit = {
+//    server.deleteById(id, failure)
+//  }
   
 //  def commit(): Unit = {
 //    server.commit()
