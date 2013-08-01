@@ -23,6 +23,12 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
   
   val httpClient: AsyncHttpClient = factory()
   
+  /**
+   * Execute given operation in the transaction.
+   * 
+   * The transaction is committed if operation was successful. 
+   * But the transaction is rolled back if an error occurred.
+   */
   def withTransaction[T](operations:  => Future[T]): Future[T] = {
     val future = operations
     future.onComplete {
