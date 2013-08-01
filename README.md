@@ -135,7 +135,7 @@ client.query("name:%name%")
   .sortBy("id", Order.asc)
   .getResultAsMap(Map("name" -> "ThinkPad X201s"))
   .onComplete {
-    case Success(x) => x.documents.foreach { println _ }
+    case Success(x) => println(x)
     case Failure(t) => t.printStackTrace()
   }
 ```
