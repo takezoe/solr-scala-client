@@ -158,27 +158,27 @@ Release Notes
 
 ### 0.0.6 - 22 Jan 2013
 
-* Fixed some ExpressionParser bugs.
+* Fixed some ```ExpressionParser``` bugs.
 
 ### 0.0.5 - 20 Nov 2012
 
-* ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
+* ```ExpressionParser``` became pluggable and added ```GoogleExpressionParser``` as an optional implementation of ```ExpressionParser```.
 * Converts the full-width space to the half-width space in the expression before calling ExpressionParser.
 * Introduced the SolrServer factory. ```Auth.basic``` moved to ```SolrServerFactory.basicAuth``` and ```SolrServerFactory.dummy``` for unit testing.
 
 ### 0.0.4 - 16 Sep 2012
 
-* Expanding expression to the Solr query by ?VAR_NAME? in SolrClient#query().
+* Expanding expression to the Solr query by ```?VAR_NAME?``` in ```SolrClient#query()```.
 * Bug fix
 
 ### 0.0.3 - 16 Aug 2012
 
 * Added case class support in update operations.
-* Added commit() method to SolrClient.
+* Added ```commit()``` method to ```SolrClient```.
 
 ### 0.0.2 - 27 May 2012
 
-* Added initializer which configures SolrClient.
+* Added initializer which configures ```SolrClient```.
 * Added basic authentication support as initializer.
 * Added facet search support.
 * Added case class support as query results and query parameters.
