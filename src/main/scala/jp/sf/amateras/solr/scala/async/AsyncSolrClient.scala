@@ -23,8 +23,8 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
   
   val httpClient: AsyncHttpClient = factory()
   
-  def withTransaction[T](operations: (AsyncSolrClient) => Future[T]): Future[T] = {
-    val future = operations(this)
+  def withTransaction[T](operations:  => Future[T]): Future[T] = {
+    val future = operations
     future.onComplete {
       case Success(x) => commit
       case Failure(t) => rollback
@@ -32,12 +32,17 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
     future
   }
   
+  /**
+   * Search documents using the given query.
+   */
   def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(httpClient, url, query)
   
   /**
-   * Registers the document and commit immediately.
+   * Add the document.
+   *
+   * @param doc the document to register
    */
-  def register(doc: Any): Future[Unit] = {
+  def add(doc: Any): Future[Unit] = {
     val solrDoc = new SolrInputDocument
     CaseClassMapper.toMap(doc).map { case (key, value) =>
       solrDoc.addField(key, value)
@@ -45,28 +50,41 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
 
     val req = new UpdateRequest()
     req.add(solrDoc)
-      
-    val promise = Promise[Unit]()
-    execute(httpClient, req, promise)
-      
-    withTransaction { _ =>
-      promise.future
+    execute(httpClient, req, Promise[Unit]())
+  }
+  
+  /**
+   * Add the document and commit them immediately.
+   *
+   * @param doc the document to register
+   */
+  def register(doc: Any): Future[Unit] = {
+    withTransaction {
+      add(doc)
     }
   }
   
   /**
-   * Deletes the document by id and commit immediately.
+   * Delete the document which has a given id.
+   *
+   * @param id the identifier of the document to delete
    */
   def deleteById(id: String): Future[Unit] = {
     val req = new UpdateRequest()
     req.deleteById(id)
-    
-    val promise = Promise[Unit]()
-    execute(httpClient, req, promise)
-    
-    withTransaction { _ =>
-      promise.future
-    }
+    execute(httpClient, req, Promise[Unit]())
+  }
+  
+  /**
+   * Delete documents by the given query.
+   *
+   * @param query the solr query to select documents which would be deleted
+   * @param params the parameter map which would be given to the query
+   */
+  def deleteByQuery(query: String, params: Map[String, Any] = Map()): Future[Unit] = {
+    val req = new UpdateRequest()
+    req.deleteByQuery(new QueryTemplate(query).merge(params))
+    execute(httpClient, req, Promise[Unit]())
   }
   
   /**
@@ -75,11 +93,7 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
   def commit(): Future[Unit] = {
     val req = new UpdateRequest()
     req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true)
-    
-    val promise = Promise[Unit]()
-    execute(httpClient, req, promise)
-    
-    promise.future
+    execute(httpClient, req, Promise[Unit]())
   }
   
   /**
@@ -87,11 +101,7 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
    */
   def rollback(): Future[Unit] = {
     val req = new UpdateRequest().rollback().asInstanceOf[UpdateRequest]
-    
-    val promise = Promise[Unit]()
-    execute(httpClient, req, promise)
-    
-    promise.future
+    execute(httpClient, req, Promise[Unit]())
   }
 
   /**
@@ -104,7 +114,7 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
    * Send request using AsyncHttpClient.
    * Returns the result of asynchronous request to the future world via given Promise.
    */
-  private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, promise: Promise[Unit]): Unit = {
+  private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
     
     val builder = httpClient.preparePost(url + "/update")
 
@@ -127,6 +137,8 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
     }
     
     builder.execute(new CallbackHandler(httpClient, promise))
+    
+    promise.future
   }
   
 }

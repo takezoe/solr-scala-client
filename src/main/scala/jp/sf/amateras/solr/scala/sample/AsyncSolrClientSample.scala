@@ -16,6 +16,13 @@ object AsyncSolrClientSample extends App {
 //    case Success(x) => println("registered!")
 //    case Failure(t) => t.printStackTrace()
 //  }
+//  
+//  client.withTransaction {
+//    for {
+//        _ <- client.add(Map("id" -> "006", "name" -> "Nexus7 2012", "manu" -> "ASUS"))
+//        _ <- client.add(Map("id" -> "007", "name" -> "Nexus7 2013", "manu" -> "ASUS"))
+//    } yield ()
+//  }
   
   val future = client.query("name:%name%")
         .fields("id", "manu", "name")
