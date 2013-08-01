@@ -121,10 +121,12 @@ solr-scala-client has also asynchronous API based on [AsyncHttpCleint](https://g
 val client = new AsyncSolrClient("http://localhost:8983/solr")
 
 // Register
-client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo")).onComplete{
-  case Success(x) => println("registered!")
-  case Failure(t) => t.printStackTrace()
-}
+client
+  .register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo"))
+  .onComplete{
+    case Success(x) => println("registered!")
+    case Failure(t) => t.printStackTrace()
+  }
 
 // Query
 client.query("name:%name%")
