@@ -146,8 +146,9 @@ Release Notes
 --------
 ### 0.0.8 - 2 Aug 2013
 
-* Recommendation search
-* Add Asynchronous API
+* Added recommendation search support.
+* Added ```rollback``` and ```withTransaction``` to ```SolrScalaClient```.
+* Added Asynchronous API.
 
 ### 0.0.7 - 4 Apr 2013
 
