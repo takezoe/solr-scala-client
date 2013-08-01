@@ -17,6 +17,25 @@ class SolrClient(url: String)
   //initializer(server)
 
   /**
+   * Execute given operation in the transaction.
+   * 
+   * The transaction is committed if operation was successful. 
+   * But the transaction is rolled back if an error occurred.
+   */
+  def withTransaction[T](operations: => T): T = {
+    try {
+      val result = operations
+      commit()
+      result
+    } catch {
+      case t: Throwable => {
+        rollback()
+        throw t
+      }
+    }
+  }
+  
+  /**
    * Search documents using the given query.
    *
    * {{{
