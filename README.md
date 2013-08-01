@@ -112,17 +112,53 @@ val result = client.query("content: Scala")
   .getResultAsMap()
 ```
 
-
-TODO
+Asynchronous API
 --------
 
-* Detailed query configuration
+solr-scala-client has also asynchronous API based on [AsyncHttpCleint](https://github.com/AsyncHttpClient/async-http-client).
+
+```scala
+import jp.sf.amateras.solr.scala.async._
+import jp.sf.amateras.solr.scala.Order
+
+import scala.concurrent._
+import scala.concurrent.duration._
+import ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+
+val client = new AsyncSolrClient("http://localhost:8983/solr")
+
+// Register
+client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo")).onComplete{
+  case Success(x) => println("registered!")
+  case Failure(t) => t.printStackTrace()
+}
+
+// Query
+client.query("name:%name%")
+  .fields("id", "manu", "name")
+  .facetFields("manu")
+  .sortBy("id", Order.asc)
+  .getResultAsMap(Map("name" -> "ThinkPad X201s"))
+  .onComplete {
+    case Success(result) => {
+      println("count: " + result.numFound)
+      result.documents.foreach { doc =>
+        println("id: " + doc("id"))
+        println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
+        println("  name: " + doc("name"))
+      }
+    }
+    case Failure(t) => t.printStackTrace()
+  }
+```
 
 Release Notes
 --------
-### 0.0.8 - IN DEVELOPMENT
+### 0.0.8 - 2 Aug 2013
 
 * Recommendation search
+* Add Asynchronous API
 
 ### 0.0.7 - 4 Apr 2013
 
