@@ -11,7 +11,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.7"
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.8"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
@@ -118,14 +118,6 @@ Asynchronous API
 solr-scala-client has also asynchronous API based on [AsyncHttpCleint](https://github.com/AsyncHttpClient/async-http-client).
 
 ```scala
-import jp.sf.amateras.solr.scala.async._
-import jp.sf.amateras.solr.scala.Order
-
-import scala.concurrent._
-import scala.concurrent.duration._
-import ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
-
 val client = new AsyncSolrClient("http://localhost:8983/solr")
 
 // Register
@@ -141,17 +133,12 @@ client.query("name:%name%")
   .sortBy("id", Order.asc)
   .getResultAsMap(Map("name" -> "ThinkPad X201s"))
   .onComplete {
-    case Success(result) => {
-      println("count: " + result.numFound)
-      result.documents.foreach { doc =>
-        println("id: " + doc("id"))
-        println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
-        println("  name: " + doc("name"))
-      }
-    }
+    case Success(x) => x.documents.foreach { println _ }
     case Failure(t) => t.printStackTrace()
   }
 ```
+
+See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/solr-scala-client/blob/master/src/main/scala/jp/sf/amateras/solr/scala/sample/AsyncSolrClientSample.scala).
 
 Release Notes
 --------
