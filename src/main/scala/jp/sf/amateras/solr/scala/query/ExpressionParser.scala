@@ -21,7 +21,7 @@ class DefaultExpressionParser extends RegexParsers with ExpressionParser {
   
   def not: Parser[AST] = "!"~>expression^^ASTNot
   
-  def word: Parser[AST] = """[^(%|!& \t)]+""".r^^ASTWord
+  def word: Parser[AST] = """[^(|!& \t)]+""".r^^ASTWord
 
   def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
   
@@ -43,7 +43,7 @@ class GoogleExpressionParser extends RegexParsers with ExpressionParser {
   
   def not: Parser[AST] = "-"~>expression^^ASTNot
   
-  def word: Parser[AST] = """[^(%|!& \t)]+""".r^^ASTWord
+  def word: Parser[AST] = """[^( \t)]+""".r^^ASTWord
 
   def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
   
