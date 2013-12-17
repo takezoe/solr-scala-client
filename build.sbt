@@ -6,7 +6,7 @@ version := "0.0.9"
 
 scalaVersion := "2.10.0"
 
-crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2", "2.10.0")
+//crossScalaVersions := Seq("2.9.1", "2.9.1-1", "2.9.2", "2.10.0")
 
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
