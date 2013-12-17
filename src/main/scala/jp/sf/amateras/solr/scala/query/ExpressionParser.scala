@@ -10,54 +10,54 @@ trait ExpressionParser {
  * contains operators such as &, | and !.
  */
 class DefaultExpressionParser extends RegexParsers with ExpressionParser {
-  
-  def operator: Parser[AST] = chainl1(expression, 
+
+  def operator: Parser[AST] = chainl1(expression,
       "&"^^{ op => (left, right) => ASTAnd(left, right)}|
       "|"^^{ op => (left, right) => ASTOr(left, right)}|
       ""^^{ op => (left, right) => ASTAnd(left, right)}
   )
-    
+
   def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
-  
+
   def not: Parser[AST] = "!"~>expression^^ASTNot
-  
+
   def word: Parser[AST] = """[^(|!& \t)]+""".r^^ASTWord
 
   def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
-  
+
   def parse(str:String) = parseAll(expression, str).get
-  
+
 }
 
 /**
  * The optional implementation of ExpressionParser which supports Google-like query.
  */
 class GoogleExpressionParser extends RegexParsers with ExpressionParser {
-  
-  def operator: Parser[AST] = chainl1(expression, 
+
+  def operator: Parser[AST] = chainl1(expression,
       "OR"^^{ op => (left, right) => ASTOr(left, right)}|
       ""^^{ op => (left, right) => ASTAnd(left, right)}
   )
-    
+
   def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
-  
+
   def not: Parser[AST] = "-"~>expression^^ASTNot
-  
-  def word: Parser[AST] = """[^( \t)]+""".r^^ASTWord
+
+  def word: Parser[AST] = """[^(\- \t)]+""".r^^ASTWord
 
   def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
-  
+
   def parse(str:String) = parseAll(expression, str).get
-  
+
 }
 
 class ExpressionParseException(cause: Throwable) extends RuntimeException(cause)
 
 object ExpressionParser {
-  
+
   /**
    * Parses the given expression and returns the Solr query.
-   * 
+   *
    * @param str the expression
    * @param parser the expression parser (default is [[jp.sf.amateras.solr.scala.query.DefaultExpressionParser]])
    * @return the Solr query
@@ -75,7 +75,7 @@ object ExpressionParser {
    * Converts the full-width space to the half-wide space.
    */
   private def normalize(str: String): String = str.replaceAll("　", " ")
-  
+
   /**
    * Visits nodes of the given AST recursive and assembles Solr query.
    */
@@ -83,10 +83,10 @@ object ExpressionParser {
     ast match {
       case and    : ASTAnd    => "(" + visit(and.left) + " AND " + visit(and.right) + ")"
       case or     : ASTOr     => "(" + visit(or.left) + " OR " + visit(or.right) + ")"
-      case not    : ASTNot    => "NOT " + visit(not.expr)
+      case not    : ASTNot    => "NOT (" + visit(not.expr) + ")"
       case phrase : ASTPhrase => "\"" + QueryUtils.escape(phrase.value) + "\""
       case word   : ASTWord   => QueryUtils.escape(word.value)
     }
   }
-  
+
 }
