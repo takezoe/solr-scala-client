@@ -20,14 +20,15 @@ class QueryTemplate(query: String) {
    */
   def merge(params: Map[String, Any])(implicit parser: ExpressionParser): String = {
     var result = query
+
     params.foreach { case (key, value) =>
-      result = result.replaceAll("\\?" + key + "\\?", ExpressionParser.parse(value.toString))
+      result = result.replace("?" + key + "?", ExpressionParser.parse(value.toString))
     }
     params.foreach { case (key, value) =>
-      result = result.replaceAll("%" + key + "%", "\"" + QueryUtils.escape(value.toString) + "\"")
+      result = result.replace("%" + key + "%", "\"" + QueryUtils.escape(value.toString) + "\"")
     }
     params.foreach { case (key, value) =>
-      result = result.replaceAll("\\$" + key + "\\$", value.toString)
+      result = result.replace("$" + key + "$", value.toString)
     }
     result
   }
