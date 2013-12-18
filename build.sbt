@@ -2,7 +2,7 @@ name := "solr-scala-client"
 
 organization := "jp.sf.amateras.solr.scala"
 
-version := "0.0.9"
+version := "0.0.10"
 
 scalaVersion := "2.10.0"
 
@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "com.ning" % "async-http-client" % "1.7.16" % "compile",
   "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.mockito" % "mockito-core" % "1.9.0" % "test",
-  "commons-logging" % "commons-logging" % "1.1" % "runtime"
+  "commons-logging" % "commons-logging" % "1.1.1" % "runtime"
 )
 
 publishTo := Some(Resolver.ssh("amateras-repo-scp", "shell.sourceforge.jp", "/home/groups/a/am/amateras/htdocs/mvn/") withPermissions("0664")
