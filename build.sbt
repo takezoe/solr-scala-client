@@ -2,7 +2,7 @@ name := "solr-scala-client"
 
 organization := "jp.sf.amateras.solr.scala"
 
-version := "0.0.10"
+version := "0.0.9"
 
 scalaVersion := "2.10.0"
 
