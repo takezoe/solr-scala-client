@@ -11,7 +11,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.9"
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.10"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
@@ -144,6 +144,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 --------
+### 0.0.10 - 08 Feb 2013
+
+* Fix escaping in string literal.
+
 ### 0.0.9 - 18 Dec 2013
 
 * Bug fix
