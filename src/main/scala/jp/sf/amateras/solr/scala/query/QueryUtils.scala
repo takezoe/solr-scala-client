@@ -14,8 +14,8 @@ object QueryUtils {
   def escape(value: String): String =
     value.toString.map { c =>
       c match {
-        case '\\' => Seq('\\', '\\', '\\', '\\')
-        case _ if specialCharacters.contains(c) => Seq('\\', '\\', c)
+        case '\\' => Seq('\\', '\\')
+        case _ if specialCharacters.contains(c) => Seq('\\', c)
         case _ => Seq(c)
       }
     }.flatten.mkString
