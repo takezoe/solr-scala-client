@@ -19,7 +19,7 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
   /**
    * Sets the field name of the unique key.
    * 
-   * @param the field name of the unique key (default is "id").
+   * @param id the field name of the unique key (default is "id").
    */
   def id(id: String): this.type = {
     this.id = id
@@ -45,14 +45,14 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * @param order the sorting order
    */
   def sortBy[T <: QueryBuilderBase](field: String, order: Order): this.type = {
-    solrQuery.addSortField(field, order)
+    solrQuery.setSort(field, order)
     this
   }
 
   /**
    * Sets grouping field names.
    *
-   * @param grouping field names
+   * @param fields field names
    */
   def groupBy[T <: QueryBuilderBase](fields: String*): this.type = {
     if(fields.size > 0){
