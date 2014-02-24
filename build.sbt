@@ -13,7 +13,7 @@ resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 resolvers += "Local Maven Repository" at "file:///"+Path.userHome.absolutePath+"/.m2/repository"
 
 libraryDependencies ++= Seq(
-  "org.apache.solr" % "solr-solrj" % "4.2.0" % "compile",
+  "org.apache.solr" % "solr-solrj" % "4.5.1" % "compile",
   "com.ning" % "async-http-client" % "1.7.16" % "compile",
   "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.mockito" % "mockito-core" % "1.9.0" % "test",
