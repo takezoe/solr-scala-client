@@ -1,19 +1,13 @@
 package jp.sf.amateras.solr.scala
 
-import scala.collection.JavaConverters.asScalaBufferConverter
-import scala.collection.JavaConverters.collectionAsScalaIterableConverter
-
-import org.apache.solr.client.solrj.SolrQuery
-import org.apache.solr.client.solrj.SolrServer
-import org.apache.solr.common.SolrDocumentList
-import org.apache.solr.common.SolrDocument
-import org.apache.solr.common.util.NamedList
-
 import jp.sf.amateras.solr.scala.query.ExpressionParser
 import jp.sf.amateras.solr.scala.query.QueryTemplate
-import org.apache.solr.client.solrj.response.QueryResponse
+import org.apache.solr.client.solrj.SolrServer
 
-class QueryBuilder(server: SolrServer, query: String)(implicit parser: ExpressionParser) extends QueryBuilderBase(query) {
+class QueryBuilder(server: SolrServer, query: String)(implicit parser: ExpressionParser)
+  extends QueryBuilderBase[QueryBuilder] {
+
+  protected def createCopy = new QueryBuilder(server, query)(parser)
 
   /**
    * Returns the search result of this query as List[Map[String, Any]].
