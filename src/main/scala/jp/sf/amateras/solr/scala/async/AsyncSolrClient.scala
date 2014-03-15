@@ -2,7 +2,7 @@ package jp.sf.amateras.solr.scala.async
 
 import com.ning.http.client.AsyncHttpClient
 import java.net.URLEncoder
-import jp.sf.amateras.solr.scala.CaseClassMapper
+import jp.sf.amateras.solr.scala.{QueryBuilderBase, CaseClassMapper}
 import jp.sf.amateras.solr.scala.async.AsyncUtils.CallbackHandler
 import jp.sf.amateras.solr.scala.query._
 import org.apache.solr.client.solrj.request.{AbstractUpdateRequest, UpdateRequest}
@@ -15,14 +15,15 @@ import scala.util.{Success, Failure}
  * Provides the asynchronous and non-blocking API for Solr.
  */
 class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new AsyncHttpClient() })
-    (implicit protected val parser: ExpressionParser = new DefaultExpressionParser()) extends IAsyncSolrClient {
+    (implicit protected val parser: ExpressionParser = new DefaultExpressionParser())
+    extends IAsyncSolrClient {
   
   val httpClient: AsyncHttpClient = factory()
   
   /**
    * Search documents using the given query.
    */
-  def query(query: String): AsyncQueryBuilder = new AsyncQueryBuilder(httpClient, url, query)
+  def query(query: String) = new AsyncQueryBuilder(httpClient, url, query)
 
   /**
    * Commit the current session.

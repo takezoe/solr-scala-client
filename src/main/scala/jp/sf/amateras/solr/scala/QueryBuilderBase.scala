@@ -5,25 +5,35 @@ import org.apache.solr.common.SolrDocument
 import org.apache.solr.common.util.NamedList
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.response.QueryResponse
-import jp.sf.amateras.solr.scala.query._
 import scala.collection.JavaConverters._
 
-abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser) {
+trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
-  protected val solrQuery = new SolrQuery()
+  protected var solrQuery = new SolrQuery()
   
   protected var id: String = "id"
   protected var highlightField: String = null
   protected var recommendFlag: Boolean = false
+
+  protected def createCopy: Repr
+
+  private def copy(newId: String = id, newHighlightField: String = highlightField,
+                   newRecommendFlag: Boolean = recommendFlag): Repr = {
+    val ret = createCopy
+    ret.id = newId
+    ret.highlightField = newHighlightField
+    ret.recommendFlag = newRecommendFlag
+    ret.solrQuery = solrQuery.getCopy
+    ret
+  }
 
   /**
    * Sets the field name of the unique key.
    * 
    * @param id the field name of the unique key (default is "id").
    */
-  def id(id: String): this.type = {
-    this.id = id
-    this
+  def id(id: String): Repr = {
+    copy(newId = id)
   }
     
   /**
@@ -31,11 +41,12 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    *
    * @param fields field names
    */
-  def fields(fields: String*): this.type = {
+  def fields(fields: String*): Repr = {
+    val ret = copy()
     fields.foreach { field =>
-      solrQuery.addField(field)
+      ret.solrQuery.addField(field)
     }
-    this
+    ret
   }
 
   /**
@@ -44,9 +55,10 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * @param field the sorting field name
    * @param order the sorting order
    */
-  def sortBy[T <: QueryBuilderBase](field: String, order: Order): this.type = {
-    solrQuery.setSort(field, order)
-    this
+  def sortBy(field: String, order: Order): Repr = {
+    val ret = copy()
+    ret.solrQuery.setSort(field, order)
+    ret
   }
 
   /**
@@ -54,12 +66,13 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    *
    * @param fields field names
    */
-  def groupBy[T <: QueryBuilderBase](fields: String*): this.type = {
+  def groupBy(fields: String*): Repr = {
+    val ret = copy()
     if(fields.size > 0){
-      solrQuery.setParam("group", "true")
-      solrQuery.setParam("group.field", fields: _*)
+      ret.solrQuery.setParam("group", "true")
+      ret.solrQuery.setParam("group.field", fields: _*)
     }
-    this
+    ret
   }
 
   /**
@@ -67,10 +80,11 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    *
    * @param fields field names
    */
-  def facetFields[T <: QueryBuilderBase](fields: String*): this.type = {
-    solrQuery.setFacet(true)
-    solrQuery.addFacetField(fields: _*)
-    this
+  def facetFields(fields: String*): Repr = {
+    val ret = copy()
+    ret.solrQuery.setFacet(true)
+    ret.solrQuery.addFacetField(fields: _*)
+    ret
   }
 
   /**
@@ -78,9 +92,10 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * 
    * @param rows number of results
    */
-  def rows(rows: Int): this.type = {
-    solrQuery.setRows(rows)
-    this
+  def rows(rows: Int): Repr = {
+    val ret = copy()
+    ret.solrQuery.setRows(rows)
+    ret
   }
     
   /**
@@ -88,9 +103,10 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * 
    * @param start zero-based offset
    */
-  def start(start: Int): this.type = {
-    solrQuery.setStart(start)
-    this
+  def start(start: Int): Repr = {
+    val ret = copy()
+    ret.solrQuery.setStart(start)
+    ret
   }
   
   /**
@@ -102,19 +118,19 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * @param prefix the prefix of highlighted ranges
    * @param postfix the postfix of highlighted ranges
    */
-  def highlight(field: String, size: Int = 100, prefix: String = "", postfix: String = ""): this.type = {
-    solrQuery.setHighlight(true)
-    solrQuery.addHighlightField(field)
-    solrQuery.setHighlightSnippets(1)
-    solrQuery.setHighlightFragsize(size)
+  def highlight(field: String, size: Int = 100, prefix: String = "", postfix: String = ""): Repr = {
+    val ret = copy(newHighlightField = field)
+    ret.solrQuery.setHighlight(true)
+    ret.solrQuery.addHighlightField(field)
+    ret.solrQuery.setHighlightSnippets(1)
+    ret.solrQuery.setHighlightFragsize(size)
     if(prefix.nonEmpty){
-      solrQuery.setHighlightSimplePre(prefix)
+      ret.solrQuery.setHighlightSimplePre(prefix)
     }
     if(postfix.nonEmpty){
-      solrQuery.setHighlightSimplePost(postfix)
+      ret.solrQuery.setHighlightSimplePost(postfix)
     }
-    highlightField = field
-    this
+    ret
   }
   
   /**
@@ -123,14 +139,14 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
    * 
    * @param fields field names of recommendation target 
    */
-  def recommend(fields: String*): this.type = {
-    solrQuery.set("mlt", true)
-    solrQuery.set("mlt.fl", fields.mkString(","))
-    solrQuery.set("mlt.mindf", 1)
-    solrQuery.set("mlt.mintf", 1)
-    solrQuery.set("mlt.count", 10)
-    recommendFlag = true
-    this
+  def recommend(fields: String*): Repr = {
+    val ret = copy(newRecommendFlag = true)
+    ret.solrQuery.set("mlt", true)
+    ret.solrQuery.set("mlt.fl", fields.mkString(","))
+    ret.solrQuery.set("mlt.mindf", 1)
+    ret.solrQuery.set("mlt.mintf", 1)
+    ret.solrQuery.set("mlt.count", 10)
+    ret
   }
 
   protected def responseToMap(response: QueryResponse): MapQueryResult = {
@@ -198,4 +214,4 @@ abstract class QueryBuilderBase(query: String)(implicit parser: ExpressionParser
     )
   }
 
-  }
+}
