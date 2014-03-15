@@ -10,7 +10,7 @@ import jp.sf.amateras.solr.scala.query._
  * This is the simple Apache Solr client for Scala.
  */
 class SolrClient(url: String)
-  (implicit factory: (String) => SolrServer = { (url: String) => new HttpSolrServer(url) },
+  (implicit factory: (String) => SolrServer = { (url: String) => new HttpSolrServer(url) }, 
             parser: ExpressionParser = new DefaultExpressionParser()) {
 
   private val server = factory(url)
@@ -18,8 +18,8 @@ class SolrClient(url: String)
 
   /**
    * Execute given operation in the transaction.
-   *
-   * The transaction is committed if operation was successful.
+   * 
+   * The transaction is committed if operation was successful. 
    * But the transaction is rolled back if an error occurred.
    */
   def withTransaction[T](operations: => T): T = {
@@ -34,7 +34,7 @@ class SolrClient(url: String)
       }
     }
   }
-
+  
   /**
    * Search documents using the given query.
    *
@@ -98,10 +98,11 @@ class SolrClient(url: String)
    * Commit the current session.
    */
   def commit(): Unit = server.commit
-
+  
   /**
    * Rolled back the current session.
    */
   def rollback(): Unit = server.rollback
 
 }
+

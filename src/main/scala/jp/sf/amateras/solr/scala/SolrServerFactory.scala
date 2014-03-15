@@ -34,7 +34,7 @@ object SolrServerFactory {
    * Provides the dummy SolrServer for unit testing.
    * 
    * {{{
-   * implicit val server = SolrServerFactory.dummt { request =>
+   * implicit val server = SolrServerFactory.dummy { request =>
    *   println(request.getMethod)
    *   println(request.getPath)
    *   println(request.getParams)

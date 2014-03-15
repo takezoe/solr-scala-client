@@ -11,7 +11,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.7"
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.10"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
@@ -112,17 +112,51 @@ val result = client.query("content: Scala")
   .getResultAsMap()
 ```
 
-
-TODO
+Asynchronous API
 --------
 
-* Detailed query configuration
+solr-scala-client has also asynchronous API based on [AsyncHttpCleint](https://github.com/AsyncHttpClient/async-http-client).
+
+```scala
+val client = new AsyncSolrClient("http://localhost:8983/solr")
+
+// Register
+client
+  .register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo"))
+  .onComplete{
+    case Success(x) => println("registered!")
+    case Failure(t) => t.printStackTrace()
+  }
+
+// Query
+client.query("name:%name%")
+  .fields("id", "manu", "name")
+  .facetFields("manu")
+  .sortBy("id", Order.asc)
+  .getResultAsMap(Map("name" -> "ThinkPad X201s"))
+  .onComplete {
+    case Success(x) => println(x)
+    case Failure(t) => t.printStackTrace()
+  }
+```
+
+See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/solr-scala-client/blob/master/src/main/scala/jp/sf/amateras/solr/scala/sample/AsyncSolrClientSample.scala).
 
 Release Notes
 --------
-### 0.0.8 - IN DEVELOPMENT
+### 0.0.10 - 08 Feb 2014
 
-* Recommendation search
+* Fix escaping in string literal.
+
+### 0.0.9 - 18 Dec 2013
+
+* Bug fix
+
+### 0.0.8 - 2 Aug 2013
+
+* Added recommendation search support.
+* Added ```rollback``` and ```withTransaction``` to ```SolrScalaClient```.
+* Added Asynchronous API.
 
 ### 0.0.7 - 4 Apr 2013
 
@@ -132,27 +166,27 @@ Release Notes
 
 ### 0.0.6 - 22 Jan 2013
 
-* Fixed some ExpressionParser bugs.
+* Fixed some ```ExpressionParser``` bugs.
 
 ### 0.0.5 - 20 Nov 2012
 
-* ExpressionParser became pluggable and added GoogleExpressionParser as an optional implementation of ExpressionParser.
+* ```ExpressionParser``` became pluggable and added ```GoogleExpressionParser``` as an optional implementation of ```ExpressionParser```.
 * Converts the full-width space to the half-width space in the expression before calling ExpressionParser.
 * Introduced the SolrServer factory. ```Auth.basic``` moved to ```SolrServerFactory.basicAuth``` and ```SolrServerFactory.dummy``` for unit testing.
 
 ### 0.0.4 - 16 Sep 2012
 
-* Expanding expression to the Solr query by ?VAR_NAME? in SolrClient#query().
+* Expanding expression to the Solr query by ```?VAR_NAME?``` in ```SolrClient#query()```.
 * Bug fix
 
 ### 0.0.3 - 16 Aug 2012
 
 * Added case class support in update operations.
-* Added commit() method to SolrClient.
+* Added ```commit()``` method to ```SolrClient```.
 
 ### 0.0.2 - 27 May 2012
 
-* Added initializer which configures SolrClient.
+* Added initializer which configures ```SolrClient```.
 * Added basic authentication support as initializer.
 * Added facet search support.
 * Added case class support as query results and query parameters.
