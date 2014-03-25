@@ -17,6 +17,11 @@ class SolrClient(url: String)
   //initializer(server)
 
   /**
+   * Shutdown this solr client to release allocated resources.
+   */
+  def shutdown(): Unit = server.shutdown
+
+  /**
    * Execute given operation in the transaction.
    * 
    * The transaction is committed if operation was successful. 
