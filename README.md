@@ -144,6 +144,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 --------
+### 0.0.11 - 29 Mar 2014
+
+* Add ```SolrClient#shutdown()```.
+
 ### 0.0.10 - 08 Feb 2014
 
 * Fix escaping in string literal.
