@@ -147,6 +147,8 @@ Release Notes
 ### 0.0.11 - 29 Mar 2014
 
 * Add ```SolrClient#shutdown()```.
+* ```QueryBuilder``` became immutable
+* Upgrade solrj version to 4.5.1
 
 ### 0.0.10 - 08 Feb 2014
 
