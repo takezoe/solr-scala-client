@@ -11,7 +11,7 @@ Add the following dependency into your build.sbt to use solr-scala-client.
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.10"
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.11"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
