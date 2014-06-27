@@ -6,6 +6,8 @@ version := "0.0.11"
 
 crossScalaVersions := Seq("2.10.3", "2.11.1")
 
+scalacOptions += "-feature"
+
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
 resolvers += "Local Maven Repository" at "file:///"+Path.userHome.absolutePath+"/.m2/repository"
