@@ -35,7 +35,19 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   def id(id: String): Repr = {
     copy(newId = id)
   }
-    
+
+
+  /**
+   * Sets the RequestHandler for the Solr query
+   *
+   * @param handler the name of the RequestHandler as defined in solrconfig.xml (default is "/select").
+   */
+  def setRequestHandler(handler: String): Repr = {
+    val ret = copy()
+    ret.solrQuery.setRequestHandler(handler)
+    ret
+  }
+  
   /**
    * Sets field names to retrieve by this query.
    *
@@ -134,6 +146,18 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
   
   /**
+   * Sets parameter field names.
+   *
+   * @param field name 
+   * @param value 
+   */
+  def setParameter(field:String,value:String ): Repr = {
+       val ret = copy()
+      ret.solrQuery.setParam(field, value)
+    ret
+  }
+  
+  /**
    * Configure to recommendation search.
    * If you call this method, the query returns documents similar to the query result instead of them.
    * 
@@ -211,6 +235,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
         CaseClassMapper.map2class[T](doc)
       },
       result.facetFields
+      result.facetDates
     )
   }
 
