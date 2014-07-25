@@ -35,7 +35,19 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   def id(id: String): Repr = {
     copy(newId = id)
   }
-    
+
+
+  /**
+   * Sets the RequestHandler for the Solr query
+   *
+   * @param handler the name of the RequestHandler as defined in solrconfig.xml (default is "/select").
+   */
+  def setRequestHandler(handler: String): Repr = {
+    val ret = copy()
+    ret.solrQuery.setRequestHandler(handler)
+    ret
+  }
+  
   /**
    * Sets field names to retrieve by this query.
    *
