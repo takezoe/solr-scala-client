@@ -19,3 +19,4 @@ case class CaseClassQueryResult[T](
     documents: List[T],
     facetFields: Map[String, Map[String, Long]],
     facetDates: Map[String, Map[String, Long]])
+

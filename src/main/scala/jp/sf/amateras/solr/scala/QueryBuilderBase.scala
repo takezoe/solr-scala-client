@@ -146,7 +146,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
   
   /**
-   * Sets parameter field names.
+   * Sets parameter field names like mm(minimum match), bf (boost function) ,.. .
    *
    * @param field name 
    * @param value 
