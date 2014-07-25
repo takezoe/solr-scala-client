@@ -1,4 +1,4 @@
-solr-scala-client
+solr-scala-client <img src="https://travis-ci.org/takezoe/solr-scala-client.svg" data-bindattr-145="145" title="Build Status Images">
 =================
 
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
