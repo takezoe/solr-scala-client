@@ -9,7 +9,7 @@ class QueryBuilderBaseSuite extends FunSuite {
     val server = SolrServerFactory.dummy(request => ())
     implicit val parser = new DefaultExpressionParser()
     val queryBuilder = new TestQueryBuilder()
-    val copied = queryBuilder.id("contentId").highlight("content", 200, "<b>", "</b>")
+    val copied = queryBuilder.id("contentId").highlight("content", 200, "<b>", "</b>", 2)
     
     assert(copied.getId == "contentId")
     assert(copied.getHilightingField == "content")
@@ -18,6 +18,7 @@ class QueryBuilderBaseSuite extends FunSuite {
     assert(copied.getQuery.getHighlightFields()(0) == "content")
     assert(copied.getQuery.getHighlightSimplePre() == "<b>")
     assert(copied.getQuery.getHighlightSimplePost() == "</b>")
+    assert(copied.getQuery.getHighlightSnippets == 2)
   }
   
   class TestQueryBuilder extends QueryBuilderBase[TestQueryBuilder]{

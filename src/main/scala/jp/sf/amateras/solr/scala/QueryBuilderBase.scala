@@ -130,11 +130,13 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
    * @param prefix the prefix of highlighted ranges
    * @param postfix the postfix of highlighted ranges
    */
-  def highlight(field: String, size: Int = 100, prefix: String = "", postfix: String = ""): Repr = {
+  def highlight(field: String, size: Int = 100,
+                prefix: String = "", postfix: String = "",
+                snippets: Int = 1): Repr = {
     val ret = copy(newHighlightField = field)
     ret.solrQuery.setHighlight(true)
     ret.solrQuery.addHighlightField(field)
-    ret.solrQuery.setHighlightSnippets(1)
+    ret.solrQuery.setHighlightSnippets(snippets)
     ret.solrQuery.setHighlightFragsize(size)
     if(prefix.nonEmpty){
       ret.solrQuery.setHighlightSimplePre(prefix)
@@ -171,9 +173,9 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
         if(solrQuery.getHighlight()){
           val id = doc.getFieldValue(this.id)
           if(id != null && highlight.get(id) != null && highlight.get(id).get(highlightField) != null){
-            map + ("highlight" -> highlight.get(id).get(highlightField).get(0))
+            map + ("highlights" -> highlight.get(id).get(highlightField))
           } else {
-            map + ("highlight" -> "")
+            throw new UnspecifiedIdError
           }
         } else {
           map
