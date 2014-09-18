@@ -146,6 +146,18 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
   
   /**
+   * Sets parameter field names like mm(minimum match), bf (boost function) ,.. .
+   *
+   * @param field name 
+   * @param value 
+   */
+  def setParameter(field:String,value:String ): Repr = {
+       val ret = copy()
+      ret.solrQuery.setParam(field, value)
+    ret
+  }
+  
+  /**
    * Configure to recommendation search.
    * If you call this method, the query returns documents similar to the query result instead of them.
    * 
@@ -223,6 +235,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
         CaseClassMapper.map2class[T](doc)
       },
       result.facetFields
+      result.facetDates
     )
   }
 
