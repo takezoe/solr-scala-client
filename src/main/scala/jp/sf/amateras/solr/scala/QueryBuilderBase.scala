@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
   protected var solrQuery = new SolrQuery()
-  
+
   protected var id: String = "id"
   protected var highlightField: String = null
   protected var recommendFlag: Boolean = false
@@ -29,11 +29,17 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
   /**
    * Sets the field name of the unique key.
-   * 
+   *
    * @param id the field name of the unique key (default is "id").
    */
   def id(id: String): Repr = {
     copy(newId = id)
+  }
+
+  def fq(fq: String): Repr = {
+    val ret = copy()
+    ret.solrQuery.addFacetQuery(fq)
+    ret
   }
 
 
@@ -47,7 +53,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret.solrQuery.setRequestHandler(handler)
     ret
   }
-  
+
   /**
    * Sets field names to retrieve by this query.
    *
@@ -101,7 +107,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
   /**
    * Specifies the maximum number of results to return.
-   * 
+   *
    * @param rows number of results
    */
   def rows(rows: Int): Repr = {
@@ -109,10 +115,10 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret.solrQuery.setRows(rows)
     ret
   }
-    
+
   /**
    * Sets the offset to start at in the result set.
-   * 
+   *
    * @param start zero-based offset
    */
   def start(start: Int): Repr = {
@@ -120,7 +126,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret.solrQuery.setStart(start)
     ret
   }
-  
+
   /**
    * Configures to retrieve a highlighted snippet.
    * Highlighted snippet is set as the "highlight" property of the map or the case class.
@@ -146,12 +152,12 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     }
     ret
   }
-  
+
   /**
    * Configure to recommendation search.
    * If you call this method, the query returns documents similar to the query result instead of them.
-   * 
-   * @param fields field names of recommendation target 
+   *
+   * @param fields field names of recommendation target
    */
   def recommend(fields: String*): Repr = {
     val ret = copy(newRecommendFlag = true)
@@ -189,7 +195,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
       docs.asScala.map { doc =>
         doc.getFieldNames.asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
       }.toList
-    } else { 
+    } else {
       solrQuery.getParams("group") match {
         case null => {
           toList(response.getResults())
@@ -213,12 +219,12 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
       )}.toMap
     }
 
-    MapQueryResult(response.getResults().getNumFound(), queryResult, facetResult)    
+    MapQueryResult(response.getResults().getNumFound(), queryResult, facetResult)
   }
-  
+
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
     val result = responseToMap(response)
-    
+
     CaseClassQueryResult[T](
       result.numFound,
       result.documents.map { doc =>
