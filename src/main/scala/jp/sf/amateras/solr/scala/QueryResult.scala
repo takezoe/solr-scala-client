@@ -9,7 +9,7 @@ package jp.sf.amateras.solr.scala
  */
 case class MapQueryResult(
     numFound: Long,
-    documents: List[Map[String, Any]],
+    documents: List[DocumentMap],
     facetFields: Map[String, Map[String, Long]])
 
 case class CaseClassQueryResult[T](
