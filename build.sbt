@@ -2,7 +2,7 @@ name := "solr-scala-client"
 
 organization := "jp.sf.amateras.solr.scala"
 
-version := "0.0.11"
+version := "0.0.12"
 
 crossScalaVersions := Seq("2.10.3", "2.11.1")
 
