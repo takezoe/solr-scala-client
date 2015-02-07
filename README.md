@@ -144,6 +144,13 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 --------
+### 0.0.12 - 7 Feb 2015
+
+* Add ```QueryBuilderBase#fq()```
+* Add ```QueryBuilderBase#setRequestHandler()```
+* Add date facet
+* Support for streaming results
+
 ### 0.0.11 - 29 Mar 2014
 
 * Add ```SolrClient#shutdown()```
