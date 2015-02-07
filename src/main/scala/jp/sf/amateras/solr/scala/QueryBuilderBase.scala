@@ -169,13 +169,17 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret
   }
 
+  protected def docToMap(doc: SolrDocument) = {
+    doc.getFieldNames.asScala.map { key ⇒ key → doc.getFieldValue(key) }.toMap
+  }
+
   protected def responseToMap(response: QueryResponse): MapQueryResult = {
     val highlight = response.getHighlighting()
 
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
       (for(i <- 0 to docList.size() - 1) yield {
         val doc = docList.get(i)
-        val map = doc.getFieldNames().asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
+        val map = docToMap(doc)
         if(solrQuery.getHighlight()){
           val id = doc.getFieldValue(this.id)
           if(id != null && highlight.get(id) != null && highlight.get(id).get(highlightField) != null){
@@ -192,10 +196,8 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     val queryResult = if(recommendFlag){
       val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
       val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
-      docs.asScala.map { doc =>
-        doc.getFieldNames.asScala.map { key => (key, doc.getFieldValue(key)) }.toMap
-      }.toList
-    } else {
+      docs.asScala.map(docToMap).toList
+    } else { 
       solrQuery.getParams("group") match {
         case null => {
           toList(response.getResults())
