@@ -1,5 +1,7 @@
 package jp.sf.amateras.solr.scala
 
+import org.apache.http.client.params.{ClientPNames, HttpClientParams}
+import org.apache.http.params.{HttpConnectionParams, HttpProtocolParams}
 import org.apache.solr.common._
 import org.apache.solr.common.util._
 import org.apache.solr.client.solrj._
@@ -20,14 +22,14 @@ object SolrServerFactory {
    */
   def basicAuth(username: String, password: String) = (url: String) => {
       val server = new HttpSolrServer(url)
-      val jurl = new java.net.URL(server.getBaseURL())
+      val jurl = new java.net.URL(server.getBaseURL)
 
-      val client = server.getHttpClient().asInstanceOf[DefaultHttpClient]
-      client.setAuthenticationPreemptive(true)
+      val client = server.getHttpClient.asInstanceOf[DefaultHttpClient]
+      client.getParams.setBooleanParameter("http.authentication.preemptive", true)
       client
-      	.getCredentialsProvider()
+      	.getCredentialsProvider
       	.setCredentials(
-          new AuthScope(jurl.getHost(), jurl.getPort(), AuthScope.ANY_REALM), 
+          new AuthScope(jurl.getHost, jurl.getPort, AuthScope.ANY_REALM),
           new UsernamePasswordCredentials(username, password)
         )
       
