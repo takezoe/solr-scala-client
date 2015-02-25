@@ -23,13 +23,13 @@ object SolrServerFactory {
       val jurl = new java.net.URL(server.getBaseURL())
 
       val client = server.getHttpClient().asInstanceOf[DefaultHttpClient]
+      client.setAuthenticationPreemptive(true)
       client
       	.getCredentialsProvider()
       	.setCredentials(
           new AuthScope(jurl.getHost(), jurl.getPort(), AuthScope.ANY_REALM), 
           new UsernamePasswordCredentials(username, password)
         )
-        .setAuthenticationPreemptive(true);
       
       server
   }
