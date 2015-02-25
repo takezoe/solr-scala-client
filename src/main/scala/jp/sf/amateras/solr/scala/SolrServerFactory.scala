@@ -1,7 +1,5 @@
 package jp.sf.amateras.solr.scala
 
-import org.apache.http.client.params.{ClientPNames, HttpClientParams}
-import org.apache.http.params.{HttpConnectionParams, HttpProtocolParams}
 import org.apache.solr.common._
 import org.apache.solr.common.util._
 import org.apache.solr.client.solrj._
@@ -11,7 +9,7 @@ import org.apache.http.auth.AuthScope
 import org.apache.http.auth.UsernamePasswordCredentials
 
 object SolrServerFactory {
-  
+
   /**
    * Configure SolrClient for basic authentication.
    *
