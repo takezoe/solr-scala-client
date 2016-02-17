@@ -1,5 +1,6 @@
 package jp.sf.amateras.solr.scala
 
+import scala.language.implicitConversions
 import org.apache.solr.client.solrj.SolrQuery.ORDER
 
 sealed trait Order {
