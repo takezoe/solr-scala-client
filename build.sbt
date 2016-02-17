@@ -4,7 +4,6 @@ organization := "jp.sf.amateras.solr.scala"
 
 version := "0.0.13-SNAPSHOT"
 
-//crossScalaVersions := Seq("2.10.3", "2.11.1")
 scalaVersion := "2.11.7"
 
 scalacOptions += "-feature"
@@ -21,16 +20,6 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "1.9.0" % "test",
   "commons-logging" % "commons-logging" % "1.1.3" % "runtime"
 )
-
-// libraryDependencies := {
-//   CrossVersion.partialVersion(scalaVersion.value) match {
-//     case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-//       libraryDependencies.value ++ Seq(
-//         "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.1"
-//       )
-//     case _ => libraryDependencies.value
-//   }
-// }
 
 publishTo <<= (version) { version: String =>
   val repoInfo =
