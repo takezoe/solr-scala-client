@@ -1,10 +1,8 @@
-solr-scala-client <img src="https://travis-ci.org/takezoe/solr-scala-client.svg" data-bindattr-145="145" title="Build Status Images">
+solr-scala-client [![Build Status](https://travis-ci.org/takezoe/solr-scala-client.svg?branch=master)](https://travis-ci.org/takezoe/solr-scala-client)
 =================
 
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
 This is based on the SolrJ and provides optimal interface for Scala.
-
-This project has been built continuously by [BuildHive](https://buildhive.cloudbees.com/view/My%20Repositories/job/takezoe/job/solr-scala-client/).
 
 Add the following dependency into your `build.sbt` to use solr-scala-client.
 
