@@ -6,12 +6,20 @@ This is based on the SolrJ and provides optimal interface for Scala.
 
 This project has been built continuously by [BuildHive](https://buildhive.cloudbees.com/view/My%20Repositories/job/takezoe/job/solr-scala-client/).
 
-Add the following dependency into your build.sbt to use solr-scala-client.
+Add the following dependency into your `build.sbt` to use solr-scala-client.
 
 ```scala
 resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
 libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.12"
+```
+
+If you want to test SNAPSHOT version, add the following dependency instead of above:
+
+```scala
+resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn-snapshot/"
+
+libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.13-SNAPSHOT"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
