@@ -7,23 +7,21 @@ This is based on the SolrJ and provides optimal interface for Scala.
 Add the following dependency into your `build.sbt` to use solr-scala-client.
 
 ```scala
-resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
-
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.12"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.13"
 ```
 
 If you want to test SNAPSHOT version, add the following dependency instead of above:
 
 ```scala
-resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn-snapshot/"
+resolvers += "sonatype-oss-snapshot" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "jp.sf.amateras.solr.scala" %% "solr-scala-client" % "0.0.13-SNAPSHOT"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.14-SNAPSHOT"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
 
 ```scala
-import jp.sf.amateras.solr.scala._
+import com.github.takezoe.solr.scala._
 
 val client = new SolrClient("http://localhost:8983/solr")
 
@@ -149,7 +147,13 @@ client.query("name:%name%")
 See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/solr-scala-client/blob/master/src/main/scala/jp/sf/amateras/solr/scala/sample/AsyncSolrClientSample.scala).
 
 Release Notes
---------
+-------------
+### 0.0.13 - 13 Aug 2016
+
+* Upgrade to SolrJ-6.1.0
+* Change group id and package name to `com.github.takezoe`
+* Publish to the Maven central repository
+
 ### 0.0.12 - 7 Feb 2015
 
 * Add ```QueryBuilderBase#fq()```
