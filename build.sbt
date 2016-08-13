@@ -36,7 +36,7 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/takezoe/blocking-slick</url>
+  <url>https://github.com/takezoe/solr-scala-client</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -44,8 +44,8 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>https://github.com/takezoe/blocking-slick</url>
-    <connection>scm:git:https://github.com/takezoe/blocking-slick.git</connection>
+    <url>https://github.com/takezoe/solr-scala-client</url>
+    <connection>scm:git:https://github.com/takezoe/solr-scala-client.git</connection>
   </scm>
   <developers>
     <developer>
