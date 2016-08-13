@@ -1,6 +1,6 @@
 package com.github.takezoe.solr.scala.async
 
-import com.ning.http.client.AsyncHttpClient
+import org.asynchttpclient._
 import java.net.URLEncoder
 
 import AsyncUtils.CallbackHandler
@@ -11,7 +11,7 @@ import scala.concurrent._
 /**
  * Provides the asynchronous and non-blocking API for Solr.
  */
-class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new AsyncHttpClient() })
+class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new DefaultAsyncHttpClient() })
     (implicit protected val parser: ExpressionParser = new DefaultExpressionParser())
     extends IAsyncSolrClient {
   
@@ -43,7 +43,7 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
    * Shutdown AsyncHttpClient.
    * Call this method before stopping your application.
    */
-  def shutdown(): Unit = httpClient.closeAsynchronously()
+  def shutdown(): Unit = httpClient.close()
 
     override protected def execute(req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
         execute(httpClient, req, promise)

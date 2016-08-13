@@ -8,7 +8,7 @@ import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient
  * This is the simple Apache Solr client for Scala.
  */
 class SolrClient(url: String)
-  (implicit factory: (String) => ApacheSolrClient = { (url: String) => new ApacheHttpSolrClient(url) },
+  (implicit factory: (String) => ApacheSolrClient = { (url: String) => new ApacheHttpSolrClient.Builder(url).build() },
             parser: ExpressionParser = new DefaultExpressionParser()) {
 
   private val server = factory(url)

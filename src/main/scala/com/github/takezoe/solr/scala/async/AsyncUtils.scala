@@ -1,7 +1,6 @@
 package com.github.takezoe.solr.scala.async
 
-import com.ning.http.client.{AsyncCompletionHandler, AsyncHttpClient, Response}
-
+import org.asynchttpclient._
 import scala.concurrent.Promise
 
 object AsyncUtils {

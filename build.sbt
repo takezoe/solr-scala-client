@@ -2,23 +2,21 @@ name := "solr-scala-client"
 
 organization := "com.github.takezoe"
 
-version := "0.0.13"
+version := "0.0.14-SNAPSHOT"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalacOptions += "-feature"
-
-resolvers += "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
 
 resolvers += "Local Maven Repository" at "file:///" + Path.userHome.absolutePath + "/.m2/repository"
 
 libraryDependencies ++= Seq(
-  "org.apache.solr" % "solr-solrj" % "6.1.0" % "compile",
-  "com.ning" % "async-http-client" % "1.7.16" % "compile",
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.1",
-  "org.scalatest" %% "scalatest" % "2.1.6" % "test",
-  "org.mockito" % "mockito-core" % "1.9.0" % "test",
-  "commons-logging" % "commons-logging" % "1.1.3" % "runtime"
+  "org.apache.solr"         % "solr-solrj"               % "6.1.0"   % "compile",
+  "org.asynchttpclient"     % "async-http-client"        % "2.0.11"  % "compile",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+  "org.scalatest"          %% "scalatest"                % "3.0.0"   % "test",
+  "org.mockito"             % "mockito-core"             % "1.10.19" % "test",
+  "commons-logging"         % "commons-logging"          % "1.2"     % "runtime"
 )
 
 publishMavenStyle := true

@@ -19,19 +19,20 @@ object SolrServerFactory {
    * }}}
    */
   def basicAuth(username: String, password: String) = (url: String) => {
-      val server = new ApacheHttpSolrClient(url)
-      val jurl = new java.net.URL(server.getBaseURL)
+    val server = new ApacheHttpSolrClient.Builder(url).build()
+    val jurl = new java.net.URL(server.getBaseURL)
 
-      val client = server.getHttpClient.asInstanceOf[DefaultHttpClient]
-      client.getParams.setBooleanParameter("http.authentication.preemptive", true)
-      client
-      	.getCredentialsProvider
-      	.setCredentials(
-          new AuthScope(jurl.getHost, jurl.getPort, AuthScope.ANY_REALM),
-          new UsernamePasswordCredentials(username, password)
-        )
-      
-      server
+    val client = server.getHttpClient.asInstanceOf[DefaultHttpClient]
+
+    client.getParams.setBooleanParameter("http.authentication.preemptive", true)
+    client
+      .getCredentialsProvider
+      .setCredentials(
+        new AuthScope(jurl.getHost, jurl.getPort, AuthScope.ANY_REALM),
+        new UsernamePasswordCredentials(username, password)
+      )
+
+    server
   }
   
   /**

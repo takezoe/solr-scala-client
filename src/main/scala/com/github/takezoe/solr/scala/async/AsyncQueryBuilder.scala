@@ -2,13 +2,13 @@ package com.github.takezoe.solr.scala.async
 
 import com.github.takezoe.solr.scala.async.AsyncUtils._
 import com.github.takezoe.solr.scala.query.ExpressionParser
-import com.ning.http.client.AsyncHandler.STATE
-import com.ning.http.client._
+import org.asynchttpclient._
 import org.apache.http.HttpStatus
 import org.apache.solr.client.solrj.impl.{StreamingBinaryResponseParser, XMLResponseParser}
 import org.apache.solr.client.solrj.response.QueryResponse
 import org.apache.solr.client.solrj.{ResponseParser, StreamingResponseCallback}
 import org.apache.solr.common.params.{CommonParams, ModifiableSolrParams, SolrParams}
+import org.asynchttpclient.AsyncHandler.State
 
 import scala.concurrent._
 import scala.util.control.Exception.ultimately
@@ -58,7 +58,7 @@ class AsyncQueryBuilder(httpClient: AsyncHttpClient, url: String, protected val 
 
       override def onCompleted(): Unit = updInputStream.finishedAppending()
 
-      override def onStatusReceived(responseStatus: HttpResponseStatus): STATE = {
+      override def onStatusReceived(responseStatus: HttpResponseStatus): State = {
         responseStatus.getStatusCode match {
           case HttpStatus.SC_OK ⇒
             import scala.concurrent.ExecutionContext.Implicits.global
@@ -74,19 +74,19 @@ class AsyncQueryBuilder(httpClient: AsyncHttpClient, url: String, protected val 
               case t ⇒ p failure t
             }
 
-            STATE.CONTINUE
+            State.CONTINUE
           case s ⇒
             updInputStream.close()
             p failure new Exception(s"$s: ${responseStatus.getStatusText}")
-            STATE.ABORT
+            State.ABORT
         }
       }
 
-      override def onHeadersReceived(headers: HttpResponseHeaders): STATE = STATE.CONTINUE
+      override def onHeadersReceived(headers: HttpResponseHeaders): State = State.CONTINUE
 
-      override def onBodyPartReceived(bodyPart: HttpResponseBodyPart): STATE = {
+      override def onBodyPartReceived(bodyPart: HttpResponseBodyPart): State = {
         updInputStream appendBytes bodyPart.getBodyPartBytes
-        STATE.CONTINUE
+        State.CONTINUE
       }
     })
 
