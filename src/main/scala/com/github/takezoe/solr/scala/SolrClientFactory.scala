@@ -8,38 +8,38 @@ import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient
 import org.apache.solr.common._
 import org.apache.solr.common.util._
 
-object SolrServerFactory {
+object SolrClientFactory {
 
   /**
-   * Configure SolrClient for basic authentication.
+   * Configure HttpSolrClient for basic authentication.
    *
    * {{{
-   * implicit val server = SolrServerFactory.basicAuth("username", "password")
+   * implicit val solr = SolrClientFactory.basicAuth("username", "password")
    * val client = new SolrClient("http://localhost:8983/solr")
    * }}}
    */
   def basicAuth(username: String, password: String) = (url: String) => {
-    val server = new ApacheHttpSolrClient.Builder(url).build()
-    val jurl = new java.net.URL(server.getBaseURL)
+    val client = new ApacheHttpSolrClient.Builder(url).build()
+    val jurl = new java.net.URL(client.getBaseURL)
 
-    val client = server.getHttpClient.asInstanceOf[DefaultHttpClient]
+    val httpClient = client.getHttpClient.asInstanceOf[DefaultHttpClient]
 
-    client.getParams.setBooleanParameter("http.authentication.preemptive", true)
-    client
+    httpClient.getParams.setBooleanParameter("http.authentication.preemptive", true)
+    httpClient
       .getCredentialsProvider
       .setCredentials(
         new AuthScope(jurl.getHost, jurl.getPort, AuthScope.ANY_REALM),
         new UsernamePasswordCredentials(username, password)
       )
 
-    server
+    client
   }
   
   /**
-   * Provides the dummy SolrServer for unit testing.
+   * Provides the dummy HttpSolrClient for unit testing.
    * 
    * {{{
-   * implicit val server = SolrServerFactory.dummy { request =>
+   * implicit val solr = SolrClientFactory.dummy { request =>
    *   println(request.getMethod)
    *   println(request.getPath)
    *   println(request.getParams)

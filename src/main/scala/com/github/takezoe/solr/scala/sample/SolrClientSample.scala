@@ -1,12 +1,12 @@
 package com.github.takezoe.solr.scala.sample
 
-import com.github.takezoe.solr.scala.{Order, SolrClient, SolrServerFactory}
+import com.github.takezoe.solr.scala.{Order, SolrClient, SolrClientFactory}
 import com.github.takezoe.solr.scala.query.GoogleExpressionParser
 
 object SolrClientSample extends App {
 
   implicit val parser = new GoogleExpressionParser()
-  implicit val server = SolrServerFactory.dummy { request =>
+  implicit val solr = SolrClientFactory.dummy { request =>
     println(request.getMethod)
     println(request.getPath)
     println(request.getParams)

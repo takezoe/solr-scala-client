@@ -5,44 +5,43 @@ import org.apache.solr.common.SolrInputDocument
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
 import org.scalatest.FunSuite
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 
 class BatchRegisterSuite extends FunSuite with MockitoSugar {
 
   test("commit calls SolrServer#commit."){
-    val server = mock[ApacheSolrClient]
-    val register = new BatchRegister(server)
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr)
     register.commit()
 
-    verify(server, times(1)).commit()
+    verify(solr, times(1)).commit()
   }
 
   test("rollback calls SolrServer#commit."){
-    val server = mock[ApacheSolrClient]
-    val register = new BatchRegister(server)
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr)
     register.rollback()
 
-    verify(server, times(1)).rollback()
+    verify(solr, times(1)).rollback()
   }
 
   test("add a document via the constructor."){
-    val server = mock[ApacheSolrClient]
-    val register = new BatchRegister(server, Map("id" -> "123"))
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr, Map("id" -> "123"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
-    verify(server, times(1)).add(captor.capture())
+    verify(solr, times(1)).add(captor.capture())
 
     val doc = captor.getValue()
     assert(doc.getField("id").getValue() == "123")
   }
 
   test("add documents via the constructor."){
-    val server = mock[ApacheSolrClient]
-    val register = new BatchRegister(server,
-        Map("id" -> "123"), Map("id" -> "456"))
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr, Map("id" -> "123"), Map("id" -> "456"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
-    verify(server, times(2)).add(captor.capture())
+    verify(solr, times(2)).add(captor.capture())
 
     val doc1 = captor.getAllValues().get(0)
     assert(doc1.getField("id").getValue() == "123")

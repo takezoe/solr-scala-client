@@ -6,7 +6,6 @@ import org.scalatest.FunSuite
 class QueryBuilderBaseSuite extends FunSuite {
   
   test("copy"){
-    val server = SolrServerFactory.dummy(request => ())
     implicit val parser = new DefaultExpressionParser()
     val queryBuilder = new TestQueryBuilder()
     val copied = queryBuilder.id("contentId")
