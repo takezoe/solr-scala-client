@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.14 - 14 Aug 2016
+
+* Small refactoring
+
 ### 0.0.13 - 13 Aug 2016
 
 * Upgrade to SolrJ-6.1.0
