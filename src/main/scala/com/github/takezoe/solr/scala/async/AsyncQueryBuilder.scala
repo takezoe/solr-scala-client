@@ -11,6 +11,7 @@ import org.apache.solr.common.params.{CommonParams, ModifiableSolrParams, SolrPa
 import org.asynchttpclient.AsyncHandler.State
 
 import scala.concurrent._
+import scala.util.{Success, Failure}
 import scala.util.control.Exception.ultimately
 
 class AsyncQueryBuilder(httpClient: AsyncHttpClient, url: String, protected val query: String)
@@ -44,7 +45,8 @@ class AsyncQueryBuilder(httpClient: AsyncHttpClient, url: String, protected val 
     promise.future
   }
 
-  protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T): Future[T] = {
+  protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T)
+                         (implicit ec: ExecutionContext): Future[T] = {
     val respParser = new StreamingBinaryResponseParser(cb)
 
     val reqBuilder = httpClient preparePost s"$url/select" setHeader
@@ -61,17 +63,16 @@ class AsyncQueryBuilder(httpClient: AsyncHttpClient, url: String, protected val 
       override def onStatusReceived(responseStatus: HttpResponseStatus): State = {
         responseStatus.getStatusCode match {
           case HttpStatus.SC_OK ⇒
-            import scala.concurrent.ExecutionContext.Implicits.global
-
-            Future(blocking {
+            Future(
               ultimately(updInputStream.close()) {
                 val namedList = respParser.processResponse(updInputStream, null)
                 val queryResponse = new QueryResponse
                 queryResponse setResponse namedList
-                p success success(queryResponse)
+                success(queryResponse)
               }
-            }) onFailure {
-              case t ⇒ p failure t
+            ).onComplete {
+              case Success(r) => p success r
+              case Failure(t) => p failure t
             }
 
             State.CONTINUE

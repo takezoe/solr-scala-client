@@ -10,7 +10,7 @@ import org.apache.solr.client.solrj.response.QueryResponse
 import org.apache.solr.common.SolrDocument
 import org.apache.solr.common.params.SolrParams
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 object AbstractAsyncQueryBuilder {
   abstract class StreamingCallback[T] {
@@ -33,7 +33,7 @@ abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: Express
         query(solrQuery, { response => responseToObject[T](response) })
     }
 
-    def streamResultsAsMap(cb: StreamingCallback[DocumentMap], params: Any = null): Future[MapQueryResult] = {
+    def streamResultsAsMap(cb: StreamingCallback[DocumentMap], params: Any = null)(implicit ex: ExecutionContext): Future[MapQueryResult] = {
         solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
         stream(solrQuery, new StreamingResponseCallback {
           override def streamSolrDocument(doc: SolrDocument): Unit = {
@@ -46,7 +46,8 @@ abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: Express
         }, { response ⇒ responseToMap(response) })
     }
 
-    def streamResultsAs[T](cb: StreamingCallback[T], params: Any = null)(implicit m: Manifest[T]): Future[CaseClassQueryResult[T]] = {
+    def streamResultsAs[T](cb: StreamingCallback[T], params: Any = null)
+                          (implicit m: Manifest[T], ec: ExecutionContext): Future[CaseClassQueryResult[T]] = {
       solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
       stream(solrQuery, new StreamingResponseCallback {
         override def streamSolrDocument(doc: SolrDocument): Unit = {
@@ -61,5 +62,6 @@ abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: Express
 
     protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T]
 
-    protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T): Future[T]
+    protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T)
+                           (implicit ex: ExecutionContext): Future[T]
 }
