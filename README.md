@@ -7,7 +7,7 @@ This is based on the SolrJ and provides optimal interface for Scala.
 Add the following dependency into your `build.sbt` to use solr-scala-client.
 
 ```scala
-libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.13"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.15"
 ```
 
 If you want to test SNAPSHOT version, add the following dependency instead of above:
@@ -15,7 +15,7 @@ If you want to test SNAPSHOT version, add the following dependency instead of ab
 ```scala
 resolvers += "sonatype-oss-snapshot" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.14-SNAPSHOT"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.16-SNAPSHOT"
 ```
 
 This is a simplest example to show usage of solr-scala-client.
@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.15 - 22 Nov 2016
+
+* Scala 2.12 support and library updating
+
 ### 0.0.14 - 14 Aug 2016
 
 * Small refactoring
