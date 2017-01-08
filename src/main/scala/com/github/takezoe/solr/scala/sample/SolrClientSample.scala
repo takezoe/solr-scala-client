@@ -6,11 +6,11 @@ import com.github.takezoe.solr.scala.query.GoogleExpressionParser
 object SolrClientSample extends App {
 
   implicit val parser = new GoogleExpressionParser()
-  implicit val solr = SolrClientFactory.dummy { request =>
-    println(request.getMethod)
-    println(request.getPath)
-    println(request.getParams)
-  }
+//  implicit val solr = SolrClientFactory.dummy { request =>
+//    println(request.getMethod)
+//    println(request.getPath)
+//    println(request.getParams)
+//  }
   val client = new SolrClient("http://localhost:8983/solr")
 
   // register
