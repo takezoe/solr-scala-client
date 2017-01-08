@@ -15,12 +15,13 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
     (implicit protected val parser: ExpressionParser = new DefaultExpressionParser())
     extends IAsyncSolrClient {
   
-  val httpClient: AsyncHttpClient = factory()
-  
+  private val httpClient: AsyncHttpClient = factory()
+  private val normalizedUrl = if(url.endsWith("/")) url.substring(0, url.length - 1) else url
+
   /**
    * Search documents using the given query.
    */
-  def query(query: String) = new AsyncQueryBuilder(httpClient, url, query)
+  def query(query: String) = new AsyncQueryBuilder(httpClient, normalizedUrl, query)
 
   /**
    * Commit the current session.
@@ -55,7 +56,7 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
    */
   private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
     
-    val builder = httpClient.preparePost(url + "/update")
+    val builder = httpClient.preparePost(normalizedUrl + "/update")
 
     if(req.getXML != null){
       // Send XML as request body
