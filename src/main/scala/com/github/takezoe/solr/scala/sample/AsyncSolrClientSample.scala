@@ -12,25 +12,22 @@ object AsyncSolrClientSample extends App {
 
   val client = new AsyncSolrClient("http://localhost:8983/solr")
 
-  client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo")).onComplete{
-    case Success(x) => println("registered!")
-    case Failure(t) => t.printStackTrace()
-  }
+  val f1 = client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo"))
   
-  client.withTransaction {
+  val f2 = client.withTransaction {
     for {
         _ <- client.add(Map("id" -> "006", "name" -> "Nexus7 2012", "manu" -> "ASUS"))
         _ <- client.add(Map("id" -> "007", "name" -> "Nexus7 2013", "manu" -> "ASUS"))
     } yield ()
   }
   
-  val future = client.query("name:%name%")
+  val f3 = client.query("name:%name%")
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResultAsMap(Map("name" -> "ThinkPad X201s"))
             
-  future.onComplete {
+  f3.onComplete {
     case Success(result) => {
       println("count: " + result.numFound)
       result.documents.foreach { doc =>
@@ -41,7 +38,12 @@ object AsyncSolrClientSample extends App {
     }
     case Failure(t) => t.printStackTrace()
   }
-  
+
+  val future = for {
+    _ <- Future.sequence(List(f1, f2))
+    _ <- f3
+  } yield ()
+
   Await.result(future, Duration.Inf)
   client.shutdown
 }
