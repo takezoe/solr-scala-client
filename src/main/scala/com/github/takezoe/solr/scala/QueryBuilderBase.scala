@@ -42,6 +42,12 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret
   }
 
+  def filteredQuery(fq:String*): Repr = {
+    val ret = copy()
+    ret.solrQuery.addFilterQuery(fq:_*)
+    ret
+  }
+
 
   /**
    * Sets the RequestHandler for the Solr query
