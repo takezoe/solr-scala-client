@@ -10,7 +10,7 @@ class QueryBuilderBaseSuite extends FunSuite {
     val queryBuilder = new TestQueryBuilder()
     val copied = queryBuilder.id("contentId")
                              .highlight("content", 200, "<b>", "</b>", 2)
-                             .fq("something:cool")
+                             .facetQuery("something:cool")
     
     assert(copied.getId == "contentId")
     assert(copied.getHilightingField == "content")
