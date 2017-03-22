@@ -36,18 +36,17 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     copy(newId = id)
   }
 
-  def fq(fq: String): Repr = {
+  def facetQuery(fq: String): Repr = {
     val ret = copy()
     ret.solrQuery.addFacetQuery(fq)
     ret
   }
 
-  def filteredQuery(fq:String*): Repr = {
+  def filteredQuery(fq: String*): Repr = {
     val ret = copy()
     ret.solrQuery.addFilterQuery(fq:_*)
     ret
   }
-
 
   /**
    * Sets the RequestHandler for the Solr query
