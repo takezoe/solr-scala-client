@@ -13,7 +13,7 @@ crossScalaVersions := Seq("2.11.12", "2.12.4")
 resolvers += "Local Maven Repository" at "file:///" + Path.userHome.absolutePath + "/.m2/repository"
 
 libraryDependencies ++= Seq(
-  "org.apache.solr"         % "solr-solrj"               % "6.3.0"   % "compile",
+  "org.apache.solr"         % "solr-solrj"               % "7.1.0"   % "compile",
   "org.asynchttpclient"     % "async-http-client"        % "2.0.37"  % "compile",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
   "org.scalatest"          %% "scalatest"                % "3.0.1"   % "test",
