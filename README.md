@@ -144,7 +144,7 @@ client.query("name:%name%")
   }
 ```
 
-See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/solr-scala-client/blob/master/src/main/scala/jp/sf/amateras/solr/scala/sample/AsyncSolrClientSample.scala).
+See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/solr-scala-client/blob/master/src/main/scala/com/github/takezoe/solr/scala/sample/AsyncSolrClientSample.scala).
 
 Release Notes
 -------------
