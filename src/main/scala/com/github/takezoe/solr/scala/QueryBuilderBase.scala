@@ -179,13 +179,13 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
 
   protected def responseToMap(response: QueryResponse): MapQueryResult = {
-    val highlight = response.getHighlighting()
+    val highlight = response.getHighlighting
 
     def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
-      (for(i <- 0 to docList.size() - 1) yield {
+      (for(i <- 0 to docList.size - 1) yield {
         val doc = docList.get(i)
         val map = docToMap(doc)
-        if(solrQuery.getHighlight()){
+        if(solrQuery.getHighlight){
           val id = doc.getFieldValue(this.id)
           if(id != null && highlight.get(id) != null && highlight.get(id).get(highlightField) != null){
             map + ("highlights" -> highlight.get(id).get(highlightField))
@@ -198,35 +198,38 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
       }).toList
     }
 
-    val queryResult = if(recommendFlag){
+    val (numFound: Long, queryResult: List[DocumentMap], groupResult: Map[String, List[Group]]) = if(recommendFlag){
       val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
       val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
-      docs.asScala.map(docToMap).toList
-    } else { 
+      (response.getResults.getNumFound, docs.asScala.map(docToMap).toList, Map.empty)
+    } else {
       solrQuery.getParams("group") match {
         case null => {
-          toList(response.getResults())
+          (response.getResults.getNumFound, toList(response.getResults), Map.empty)
         }
         case _ => {
-          val groupResponse = response.getGroupResponse()
-          groupResponse.getValues().asScala.map { groupCommand =>
-            groupCommand.getValues().asScala.map { group =>
-              toList(group.getResult())
-            }.flatten
-          }.flatten.toList
+          var matches = 0L
+          val groupResult = response.getGroupResponse.getValues.asScala.map { groupCommand =>
+            matches = matches + groupCommand.getMatches
+            groupCommand.getName -> groupCommand.getValues.asScala.map { group =>
+              Group(group.getGroupValue, group.getResult.getNumFound, toList(group.getResult))
+            }.toList
+          }.toMap
+
+          (matches, List.empty, groupResult)
         }
       }
     }
 
-    val facetResult = response.getFacetFields() match {
+    val facetResult = response.getFacetFields match {
       case null => Map.empty[String, Map[String, Long]]
       case facetFields => facetFields.asScala.map { field => (
-          field.getName(),
-          field.getValues().asScala.map { value => (value.getName(), value.getCount()) }.toMap
+          field.getName,
+          field.getValues.asScala.map { value => (value.getName, value.getCount) }.toMap
       )}.toMap
     }
 
-    MapQueryResult(response.getResults().getNumFound(), queryResult, facetResult)
+    MapQueryResult(numFound, queryResult, groupResult, facetResult)
   }
 
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
