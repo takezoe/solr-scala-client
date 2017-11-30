@@ -5,15 +5,12 @@ import java.io.IOException
 import com.github.takezoe.solr.scala.async.AsyncUtils._
 import com.github.takezoe.solr.scala.query.ExpressionParser
 import okhttp3._
-import org.apache.http.HttpStatus
 import org.apache.solr.client.solrj.impl.{StreamingBinaryResponseParser, XMLResponseParser}
 import org.apache.solr.client.solrj.response.QueryResponse
 import org.apache.solr.client.solrj.{ResponseParser, StreamingResponseCallback}
 import org.apache.solr.common.params.{CommonParams, SolrParams}
 
 import scala.concurrent._
-import scala.util.{Failure, Success}
-import scala.util.control.Exception.ultimately
 import scala.collection.JavaConverters._
 
 class AsyncQueryBuilder(httpClient: OkHttpClient, url: String, protected val query: String)
@@ -49,54 +46,25 @@ class AsyncQueryBuilder(httpClient: OkHttpClient, url: String, protected val que
     promise.future
   }
 
-// TODO Is it possible to implement this method in OkHttp3?
-//  protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T)
-//                         (implicit ec: ExecutionContext): Future[T] = {
-//    val respParser = new StreamingBinaryResponseParser(cb)
-//
-//    val reqBuilder = httpClient preparePost s"$url/select" setHeader
-//      ("Content-Type", "application/x-www-form-urlencoded") setBody postQueryBody(solrQuery, respParser)
-//
-//    val p = Promise[T]()
-//    reqBuilder.execute(new AsyncHandler[Unit] {
-//      val updInputStream = new UpdatableInputStream
-//
-//      override def onThrowable(t: Throwable): Unit = p failure t
-//
-//      override def onCompleted(): Unit = updInputStream.finishedAppending()
-//
-//      override def onStatusReceived(responseStatus: HttpResponseStatus): State = {
-//        responseStatus.getStatusCode match {
-//          case HttpStatus.SC_OK ⇒
-//            Future(
-//              ultimately(updInputStream.close()) {
-//                val namedList = respParser.processResponse(updInputStream, null)
-//                val queryResponse = new QueryResponse
-//                queryResponse setResponse namedList
-//                success(queryResponse)
-//              }
-//            ).onComplete {
-//              case Success(r) => p success r
-//              case Failure(t) => p failure t
-//            }
-//
-//            State.CONTINUE
-//          case s ⇒
-//            updInputStream.close()
-//            p failure new Exception(s"$s: ${responseStatus.getStatusText}")
-//            State.ABORT
-//        }
-//      }
-//
-//      override def onHeadersReceived(headers: HttpResponseHeaders): State = State.CONTINUE
-//
-//      override def onBodyPartReceived(bodyPart: HttpResponseBodyPart): State = {
-//        updInputStream appendBytes bodyPart.getBodyPartBytes
-//        State.CONTINUE
-//      }
-//    })
-//
-//    p.future
-//  }
+  protected def stream(solrQuery: SolrParams, cb: StreamingResponseCallback)(implicit ec: ExecutionContext): Future[Unit] = {
+    val promise = Promise[Unit]()
+
+    val parser = new StreamingBinaryResponseParser(cb)
+    val builder = new Request.Builder().url(url + "/select").post(createFormBody(solrQuery, parser))
+
+    httpClient.newCall(builder.build()).enqueue(new Callback {
+      override def onFailure(call: Call, e: IOException): Unit = {
+        promise.failure(e)
+      }
+      override def onResponse(call: Call, response: Response): Unit = {
+        val namedList = parser.processResponse(response.body.byteStream, "UTF-8")
+        val queryResponse = new QueryResponse
+        queryResponse.setResponse(namedList)
+        promise.success((): Unit)
+      }
+    })
+
+    promise.future
+  }
 
 }
