@@ -5,6 +5,7 @@ import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.solr.client.solrj._
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient}
+import org.apache.solr.client.solrj.impl.{CloudSolrClient => ApacheCloudSolrClient}
 import org.apache.solr.common._
 import org.apache.solr.common.util._
 
@@ -58,5 +59,21 @@ object SolrClientFactory {
       response
     }
   }
-  
+
+  def cloud() = (url: String) => (new ApacheCloudSolrClient.Builder).withZkHost(url).build()
+
+  def cloud(username: String, password: String) = (url: String) => {
+    val client = (new ApacheCloudSolrClient.Builder).withZkHost(url).build()
+    val httpClient = client.getHttpClient.asInstanceOf[DefaultHttpClient]
+
+    httpClient.getParams.setBooleanParameter("http.authentication.preemptive", true)
+    httpClient
+      .getCredentialsProvider
+      .setCredentials(
+        AuthScope.ANY,
+        new UsernamePasswordCredentials(username, password))
+
+    client
+  }
+
 }
