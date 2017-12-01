@@ -1,21 +1,26 @@
 package com.github.takezoe.solr.scala.async
 
-import org.asynchttpclient._
 import java.net.URLEncoder
 
 import AsyncUtils.CallbackHandler
 import com.github.takezoe.solr.scala.query.{DefaultExpressionParser, ExpressionParser}
+import okhttp3._
 import org.apache.solr.client.solrj.request.{AbstractUpdateRequest, UpdateRequest}
+
 import scala.concurrent._
+
+object ContentTypes {
+  val XML = MediaType.parse("text/xml; charset=UTF-8")
+}
 
 /**
  * Provides the asynchronous and non-blocking API for Solr.
  */
-class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new DefaultAsyncHttpClient() })
+class AsyncSolrClient(url: String, factory: () => OkHttpClient = { () => new OkHttpClient() })
     (implicit protected val parser: ExpressionParser = new DefaultExpressionParser())
     extends IAsyncSolrClient {
   
-  private val httpClient: AsyncHttpClient = factory()
+  private val httpClient: OkHttpClient = factory()
   private val normalizedUrl = if(url.endsWith("/")) url.substring(0, url.length - 1) else url
 
   /**
@@ -44,40 +49,44 @@ class AsyncSolrClient(url: String, factory: () => AsyncHttpClient = { () => new 
    * Shutdown AsyncHttpClient.
    * Call this method before stopping your application.
    */
-  def shutdown(): Unit = httpClient.close()
+  def shutdown(): Unit = httpClient.dispatcher.executorService.shutdown()
 
     override protected def execute(req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
         execute(httpClient, req, promise)
     }
 
-    /**
+  /**
    * Send request using AsyncHttpClient.
    * Returns the result of asynchronous request to the future world via given Promise.
    */
-  private def execute(httpClient: AsyncHttpClient, req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
+  private def execute(httpClient: OkHttpClient, req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
     
-    val builder = httpClient.preparePost(normalizedUrl + "/update")
+    //val builder = httpClient.preparePost(normalizedUrl + "/update")
+    val builder = new Request.Builder().url(normalizedUrl + "/update")
 
     if(req.getXML != null){
       // Send XML as request body
       val writer = new java.io.StringWriter()
       req.writeXML(writer)
-      builder.addHeader("Content-Type", "text/xml; charset=UTF-8")
-      builder.setBody(writer.toString.getBytes("UTF-8"))
-      
+      builder.post(RequestBody.create(ContentTypes.XML, writer.toString))
+
     } else {
       // Send URL encoded parameters as request body
       builder.addHeader("Content-Charset", "UTF-8")
       builder.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-        import scala.collection.JavaConverters._
-        val params = req.getParams
-      builder.setBody(params.getParameterNames.asScala.map { name =>
-        URLEncoder.encode(name, "UTF-8") + "=" + URLEncoder.encode(params.get(name), "UTF-8")
-      }.mkString("&"))
+      import scala.collection.JavaConverters._
+      val params = req.getParams
+
+      val formBuilder = new FormBody.Builder()
+      params.getParameterNames.asScala.map { name =>
+        formBuilder.add(name, params.get(name))
+      }
+      builder.post(formBuilder.build())
     }
-    
-    builder.execute(new CallbackHandler(httpClient, promise))
-    
+
+    val request = builder.build()
+    httpClient.newCall(request).enqueue(new CallbackHandler(httpClient, promise))
+
     promise.future
   }
   

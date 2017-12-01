@@ -33,35 +33,47 @@ abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: Express
         query(solrQuery, { response => responseToObject[T](response) })
     }
 
-    def streamResultsAsMap(cb: StreamingCallback[DocumentMap], params: Any = null)(implicit ex: ExecutionContext): Future[MapQueryResult] = {
-        solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-        stream(solrQuery, new StreamingResponseCallback {
-          override def streamSolrDocument(doc: SolrDocument): Unit = {
-            cb streamDocument docToMap(doc)
-          }
+  def streamResult(cb: StreamingCallback[DocumentMap], params: Any = null)(implicit ex: ExecutionContext): Future[Unit] = {
+    solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
 
-          override def streamDocListInfo(numFound: Long, start: Long, maxScore: lang.Float): Unit = {
-            cb.streamDocListInfo(numFound, start, maxScore)
-          }
-        }, { response ⇒ responseToMap(response) })
-    }
+    stream(solrQuery, new StreamingResponseCallback {
+      override def streamSolrDocument(doc: SolrDocument): Unit = {
+        cb.streamDocument(docToMap(doc))
+      }
+      override def streamDocListInfo(numFound: Long, start: Long, maxScore: lang.Float): Unit = {
+        cb.streamDocListInfo(numFound, start, maxScore)
+      }
+    })
+  }
 
-    def streamResultsAs[T](cb: StreamingCallback[T], params: Any = null)
-                          (implicit m: Manifest[T], ec: ExecutionContext): Future[CaseClassQueryResult[T]] = {
-      solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-      stream(solrQuery, new StreamingResponseCallback {
-        override def streamSolrDocument(doc: SolrDocument): Unit = {
-          cb streamDocument CaseClassMapper.map2class[T](docToMap(doc))
-        }
-
-        override def streamDocListInfo(numFound: Long, start: Long, maxScore: lang.Float): Unit = {
-          cb.streamDocListInfo(numFound, start, maxScore)
-        }
-      }, { response ⇒ responseToObject[T](response) })
-    }
+//  def streamResultsAsMap(cb: StreamingCallback[DocumentMap], params: Any = null)(implicit ex: ExecutionContext): Future[MapQueryResult] = {
+//        solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
+//
+//        stream(solrQuery, new StreamingResponseCallback {
+//          override def streamSolrDocument(doc: SolrDocument): Unit = {
+//            cb streamDocument docToMap(doc)
+//          }
+//          override def streamDocListInfo(numFound: Long, start: Long, maxScore: lang.Float): Unit = {
+//            cb.streamDocListInfo(numFound, start, maxScore)
+//          }
+//        }, { response ⇒ responseToMap(response) })
+//    }
+//
+//    def streamResultsAs[T](cb: StreamingCallback[T], params: Any = null)
+//                          (implicit m: Manifest[T], ec: ExecutionContext): Future[CaseClassQueryResult[T]] = {
+//      solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
+//
+//      stream(solrQuery, new StreamingResponseCallback {
+//        override def streamSolrDocument(doc: SolrDocument): Unit = {
+//          cb streamDocument CaseClassMapper.map2class[T](docToMap(doc))
+//        }
+//        override def streamDocListInfo(numFound: Long, start: Long, maxScore: lang.Float): Unit = {
+//          cb.streamDocListInfo(numFound, start, maxScore)
+//        }
+//      }, { response ⇒ responseToObject[T](response) })
+//    }
 
     protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T]
 
-    protected def stream[T](solrQuery: SolrParams, cb: StreamingResponseCallback, success: QueryResponse ⇒ T)
-                           (implicit ex: ExecutionContext): Future[T]
+    protected def stream(solrQuery: SolrParams, cb: StreamingResponseCallback)(implicit ex: ExecutionContext): Future[Unit]
 }

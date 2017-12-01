@@ -10,11 +10,11 @@ scalacOptions += "-feature"
 
 crossScalaVersions := Seq("2.11.12", "2.12.4")
 
-resolvers += "Local Maven Repository" at "file:///" + Path.userHome.absolutePath + "/.m2/repository"
+resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "org.apache.solr"         % "solr-solrj"               % "7.1.0"   % "compile",
-  "org.asynchttpclient"     % "async-http-client"        % "2.0.37"  % "compile",
+  "org.apache.solr"         % "solr-solrj"               % "7.1.0",
+  "com.squareup.okhttp3"    % "okhttp"                   % "3.9.1",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
   "org.scalatest"          %% "scalatest"                % "3.0.1"   % "test",
   "org.mockito"             % "mockito-core"             % "2.2.22"  % "test",
