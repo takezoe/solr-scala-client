@@ -11,16 +11,20 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
   protected var solrQuery = new SolrQuery()
 
+  protected var collection: String = null
   protected var id: String = "id"
   protected var highlightField: String = null
   protected var recommendFlag: Boolean = false
 
   protected def createCopy: Repr
 
-  private def copy(newId: String = id, newHighlightField: String = highlightField,
+  private def copy(newId: String = id,
+                   newCollection: String = collection,
+                   newHighlightField: String = highlightField,
                    newRecommendFlag: Boolean = recommendFlag): Repr = {
     val ret = createCopy
     ret.id = newId
+    ret.collection = newCollection
     ret.highlightField = newHighlightField
     ret.recommendFlag = newRecommendFlag
     ret.solrQuery = solrQuery.getCopy
@@ -34,6 +38,10 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
    */
   def id(id: String): Repr = {
     copy(newId = id)
+  }
+
+  def collection(collection: String) = {
+    copy(newCollection = collection)
   }
 
   def facetQuery(fq: String): Repr = {
