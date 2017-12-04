@@ -16,7 +16,7 @@ class QueryBuilder(server: ApacheSolrClient, query: String)(implicit parser: Exp
    */
   def getResultAsMap(params: Any = null): MapQueryResult = {
     solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-    responseToMap(server.query(solrQuery))
+    responseToMap(server.query(collection, solrQuery))
   }
 
   /**
@@ -27,8 +27,7 @@ class QueryBuilder(server: ApacheSolrClient, query: String)(implicit parser: Exp
    */
   def getResultAs[T](params: Any = null)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
     solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-    responseToObject[T](server.query(solrQuery))
+    responseToObject[T](server.query(collection, solrQuery))
   }
 
 }
-
