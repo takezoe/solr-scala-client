@@ -71,14 +71,14 @@ class SolrClient(url: String)
    *       .commit
    * }}}
    */
-  def add(docs: Any*): BatchRegister = new BatchRegister(server, CaseClassMapper.toMapArray(docs: _*): _*)
+  def add(docs: Any*): BatchRegister = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*)
 
   /**
    * Add documents and commit them immediately.
    *
    * @param docs documents to register
    */
-  def register(docs: Any*): Unit = new BatchRegister(server, CaseClassMapper.toMapArray(docs: _*): _*).commit
+  def register(docs: Any*): Unit = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*).commit
 
   /**
    * Delete the document which has a given id.

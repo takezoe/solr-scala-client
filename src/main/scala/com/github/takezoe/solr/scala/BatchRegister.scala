@@ -3,7 +3,7 @@ package com.github.takezoe.solr.scala
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.common.SolrInputDocument
 
-class BatchRegister(server: ApacheSolrClient, docs: Map[String, Any]*){
+class BatchRegister(server: ApacheSolrClient, collection: String, docs: Map[String, Any]*){
 
   add(docs: _*)
 
@@ -13,7 +13,7 @@ class BatchRegister(server: ApacheSolrClient, docs: Map[String, Any]*){
       doc.map { case (key, value) =>
         solrDoc.addField(key, value)
       }
-      server.add(solrDoc)
+      server.add(collection, solrDoc)
     }
     this
   }
