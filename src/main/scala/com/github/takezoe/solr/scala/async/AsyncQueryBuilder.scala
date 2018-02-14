@@ -56,11 +56,13 @@ class AsyncQueryBuilder(httpClient: OkHttpClient, url: String, protected val que
       override def onFailure(call: Call, e: IOException): Unit = {
         promise.failure(e)
       }
-      override def onResponse(call: Call, response: Response): Unit = {
+      override def onResponse(call: Call, response: Response): Unit = try {
         val namedList = parser.processResponse(response.body.byteStream, "UTF-8")
         val queryResponse = new QueryResponse
         queryResponse.setResponse(namedList)
         promise.success((): Unit)
+      } finally {
+        response.close()
       }
     })
 
