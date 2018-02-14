@@ -19,8 +19,10 @@ object AsyncUtils {
       promise.failure(e)
     }
 
-    override def onResponse(call: Call, response: Response): Unit = {
+    override def onResponse(call: Call, response: Response): Unit = try {
       promise.success(success(response))
+    } finally {
+      response.close()
     }
   }
   
