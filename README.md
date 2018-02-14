@@ -148,6 +148,21 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.18 - 15 Feb 2018
+
+* Fix response leaking bug
+
+### 0.0.17 - 5 Dec 2017
+
+* Upgrade to SolrJ-7.1.0
+* Switch backend to OkHttp from async-http-client
+* Allow specifying collection name when building query
+* Add implementation of CloudSolrClient with and without authentication
+
+### 0.0.16 - 18 Oct 2017
+
+* Upgrade Scala and async-http-client
+
 ### 0.0.15 - 22 Nov 2016
 
 * Scala 2.12 support and library updating
