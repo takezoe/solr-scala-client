@@ -12,7 +12,7 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
 
   test("commit calls SolrServer#commit."){
     val solr = mock[ApacheSolrClient]
-    val register = new BatchRegister(solr, null)
+    val register = new BatchRegister(solr, None)
     register.commit()
 
     verify(solr, times(1)).commit()
@@ -20,7 +20,7 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
 
   test("rollback calls SolrServer#commit."){
     val solr = mock[ApacheSolrClient]
-    val register = new BatchRegister(solr, null)
+    val register = new BatchRegister(solr, None)
     register.rollback()
 
     verify(solr, times(1)).rollback()
@@ -28,7 +28,7 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
 
   test("add a document via the constructor."){
     val solr = mock[ApacheSolrClient]
-    val register = new BatchRegister(solr, null, Map("id" -> "123"))
+    val register = new BatchRegister(solr, None, Map("id" -> "123"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
     verify(solr, times(1)).add(ArgumentMatchers.eq[String](null), captor.capture())
@@ -39,7 +39,7 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
 
   test("add documents via the constructor."){
     val solr = mock[ApacheSolrClient]
-    val register = new BatchRegister(solr, null, Map("id" -> "123"), Map("id" -> "456"))
+    val register = new BatchRegister(solr, None, Map("id" -> "123"), Map("id" -> "456"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
     verify(solr, times(2)).add(ArgumentMatchers.eq[String](null), captor.capture())
