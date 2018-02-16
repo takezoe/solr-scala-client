@@ -71,14 +71,40 @@ class SolrClient(url: String)
    *       .commit
    * }}}
    */
-  def add(docs: Any*): BatchRegister = new BatchRegister(server, CaseClassMapper.toMapArray(docs: _*): _*)
+  def add(docs: Any*): BatchRegister = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*)
+
+  /**
+   * Execute batch updating on the specified collection.
+   *
+   * Note: To register documents actual, you have to call commit after added them.
+   *
+   * {{{
+   * import jp.sf.amateras.solr.scala._
+   *
+   * val client = new SolrClient("http://localhost:8983/solr")
+   *
+   * client.addToCollection("collection", Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
+   *       .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
+   *       .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
+   *       .commit
+   * }}}
+   */
+  def addToCollection(collection: String, docs: Any*): BatchRegister = new BatchRegister(server, collection, CaseClassMapper.toMapArray(docs: _*): _*)
 
   /**
    * Add documents and commit them immediately.
    *
    * @param docs documents to register
    */
-  def register(docs: Any*): Unit = new BatchRegister(server, CaseClassMapper.toMapArray(docs: _*): _*).commit
+  def register(docs: Any*): Unit = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*).commit
+
+  /**
+   * Add documents and commit them immediately to the specified collection.
+   *
+   * @param collection the name of the collection
+   * @param docs documents to register
+   */
+  def registerToCollection(collection: String, docs: Any*): Unit = new BatchRegister(server, collection, CaseClassMapper.toMapArray(docs: _*): _*).commit
 
   /**
    * Delete the document which has a given id.
@@ -88,6 +114,14 @@ class SolrClient(url: String)
   def deleteById(id: String): Unit = server.deleteById(id)
 
   /**
+   * Delete the document which has a given id in the specified collection.
+   *
+   * @param collection the name of the collection
+   * @param id the identifier of the document to delete
+   */
+  def deleteById(collection: String, id: String): Unit = server.deleteById(collection, id)
+
+  /**
    * Delete documents by the given query.
    *
    * @param query the solr query to select documents which would be deleted
@@ -95,6 +129,17 @@ class SolrClient(url: String)
    */
   def deleteByQuery(query: String, params: Map[String, Any] = Map()): Unit = {
     server.deleteByQuery(new QueryTemplate(query).merge(params))
+  }
+
+  /**
+   * Delete documents by the given query on the specified collection.
+   *
+   * @param collection the name of the collection
+   * @param query the solr query to select documents which would be deleted
+   * @param params the parameter map which would be given to the query
+   */
+  def deleteByQueryForCollection(collection: String, query: String, params: Map[String, Any] = Map()): Unit = {
+    server.deleteByQuery(collection, new QueryTemplate(query).merge(params))
   }
 
   /**
