@@ -106,6 +106,34 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret
   }
 
+  def enableGroupFacet(): Repr = {
+    val ret = copy()
+    ret.solrQuery.set("group.facet",true)
+    ret
+  }
+
+  def enableGroupCount(): Repr = {
+    val ret = copy()
+    ret.solrQuery.set("group.ngroups", true)
+    ret
+  }
+
+  def limitGrouping(limit:Int): Repr = {
+    val ret = copy()
+    ret.solrQuery.set("group.limit", limit)
+    ret
+  }
+
+  def collapseBy(field:String,expandCount:Int):Repr = {
+    val ret = copy()
+    ret.solrQuery.addFilterQuery(s"{!collapse field=$field}")
+    if(expandCount > 0) {
+      ret.solrQuery.set("expand", "true")
+      ret.solrQuery.set("expand.rows", expandCount)
+    }
+    ret
+  }
+
   /**
    * Sets facet field names.
    *
@@ -206,25 +234,27 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
       }).toList
     }
 
-    val (numFound: Long, queryResult: List[DocumentMap], groupResult: Map[String, List[Group]]) = if(recommendFlag){
+    val (numFound: Long,numGroupsFound: Long, queryResult: List[DocumentMap], groupResult: Map[String, List[Group]]) = if(recommendFlag){
       val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
       val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
       (response.getResults.getNumFound, docs.asScala.map(docToMap).toList, Map.empty)
     } else {
       solrQuery.getParams("group") match {
         case null => {
-          (response.getResults.getNumFound, toList(response.getResults), Map.empty)
+          (response.getResults.getNumFound,0L, toList(response.getResults), Map.empty)
         }
         case _ => {
           var matches = 0L
+          var groupMatches = 0L
           val groupResult = response.getGroupResponse.getValues.asScala.map { groupCommand =>
             matches = matches + groupCommand.getMatches
+            groupMatches = groupMatches + groupCommand.getNGroups
             groupCommand.getName -> groupCommand.getValues.asScala.map { group =>
               Group(group.getGroupValue, group.getResult.getNumFound, toList(group.getResult))
             }.toList
           }.toMap
 
-          (matches, List.empty, groupResult)
+          (matches,groupMatches, List.empty, groupResult)
         }
       }
     }
@@ -236,8 +266,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
           field.getValues.asScala.map { value => (value.getName, value.getCount) }.toMap
       )}.toMap
     }
-
-    MapQueryResult(numFound, queryResult, groupResult, facetResult)
+    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,response.getQTime)
   }
 
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
