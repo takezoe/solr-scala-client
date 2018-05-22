@@ -10,9 +10,11 @@ package com.github.takezoe.solr.scala
  */
 case class MapQueryResult(
     numFound: Long,
+    numGroupsFound: Long,
     documents: List[DocumentMap],
     groups: Map[String, List[Group]],
-    facetFields: Map[String, Map[String, Long]])
+    facetFields: Map[String, Map[String, Long]],
+    qTime:Int)
 
 /**
  * The result of query which is executed by QueryBuilder#getResultAs().
