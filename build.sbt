@@ -2,13 +2,13 @@ name := "solr-scala-client"
 
 organization := "com.github.takezoe"
 
-version := "0.0.18"
+version := "0.0.19"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.6"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.4")
+crossScalaVersions := Seq("2.11.12", "2.12.6")
 
 resolvers += Resolver.mavenLocal
 

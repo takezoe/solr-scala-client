@@ -7,7 +7,7 @@ This is based on the SolrJ and provides optimal interface for Scala.
 Add the following dependency into your `build.sbt` to use solr-scala-client.
 
 ```scala
-libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.18"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.19"
 ```
 
 If you want to test SNAPSHOT version, add the following dependency instead of above:
@@ -148,6 +148,11 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.19 - 4 Jun 2018
+
+* Add support for grouping and qTime in the response
+* Allow batch processing with a specific collection
+
 ### 0.0.18 - 15 Feb 2018
 
 * Fix response leaking bug
