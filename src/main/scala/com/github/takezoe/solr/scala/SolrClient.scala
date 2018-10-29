@@ -71,7 +71,7 @@ class SolrClient(url: String)
    *       .commit
    * }}}
    */
-  def add(docs: Any*): BatchRegister = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*)
+  def add(docs: Any*): BatchRegister = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*)
 
   /**
    * Execute batch updating on the specified collection.
@@ -89,14 +89,14 @@ class SolrClient(url: String)
    *       .commit
    * }}}
    */
-  def addToCollection(collection: String, docs: Any*): BatchRegister = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*): _*)
+  def addToCollection(collection: String, docs: Any*): BatchRegister = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*)
 
   /**
    * Add documents and commit them immediately.
    *
    * @param docs documents to register
    */
-  def register(docs: Any*): Unit = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*): _*).commit
+  def register(docs: Any*): Unit = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
 
   /**
    * Add documents and commit them immediately to the specified collection.
@@ -104,7 +104,7 @@ class SolrClient(url: String)
    * @param collection the name of the collection
    * @param docs documents to register
    */
-  def registerToCollection(collection: String, docs: Any*): Unit = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*): _*).commit
+  def registerToCollection(collection: String, docs: Any*): Unit = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
 
   /**
    * Delete the document which has a given id.

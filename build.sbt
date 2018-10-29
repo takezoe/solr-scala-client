@@ -4,21 +4,21 @@ organization := "com.github.takezoe"
 
 version := "0.0.19"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.7"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.6")
+crossScalaVersions := Seq("2.11.12", "2.12.7", "2.13.0-M5")
 
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   "org.apache.solr"         % "solr-solrj"               % "7.1.0",
   "com.squareup.okhttp3"    % "okhttp"                   % "3.9.1",
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
-  "org.scalatest"          %% "scalatest"                % "3.0.1"   % "test",
-  "org.mockito"             % "mockito-core"             % "2.2.22"  % "test",
-  "commons-logging"         % "commons-logging"          % "1.2"     % "runtime"
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1",
+  "org.scalatest"          %% "scalatest"                % "3.0.6-SNAP4" % "test",
+  "org.mockito"             % "mockito-core"             % "2.2.22"      % "test",
+  "commons-logging"         % "commons-logging"          % "1.2"         % "runtime"
 )
 
 publishMavenStyle := true
