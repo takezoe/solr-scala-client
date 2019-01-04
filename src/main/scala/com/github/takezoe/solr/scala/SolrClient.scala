@@ -3,6 +3,7 @@ package com.github.takezoe.solr.scala
 import com.github.takezoe.solr.scala.query.{DefaultExpressionParser, ExpressionParser, QueryTemplate}
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient}
+import org.apache.solr.client.solrj.response.UpdateResponse
 
 /**
  * This is the simple Apache Solr client for Scala.
@@ -21,8 +22,8 @@ class SolrClient(url: String)
 
   /**
    * Execute given operation in the transaction.
-   * 
-   * The transaction is committed if operation was successful. 
+   *
+   * The transaction is committed if operation was successful.
    * But the transaction is rolled back if an error occurred.
    */
   def withTransaction[T](operations: => T): T = {
@@ -37,7 +38,26 @@ class SolrClient(url: String)
       }
     }
   }
-  
+
+  /**
+    * Execute given operation in the transaction to a collection
+    *
+    * The transaction is committed if operation was successful.
+    * But the transaction is rolled back if an error occurred.
+    */
+  def withTransactionOnCollection[T](operations: => T, collection: String): T = {
+    try {
+      val result = operations
+      commitToCollection(collection)
+      result
+    } catch {
+      case t: Throwable => {
+        rollbackCollection(collection)
+        throw t
+      }
+    }
+  }
+
   /**
    * Search documents using the given query.
    *
@@ -96,7 +116,7 @@ class SolrClient(url: String)
    *
    * @param docs documents to register
    */
-  def register(docs: Any*): Unit = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
+  def register(docs: Any*): UpdateResponse = new BatchRegister(server, null, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
 
   /**
    * Add documents and commit them immediately to the specified collection.
@@ -104,14 +124,14 @@ class SolrClient(url: String)
    * @param collection the name of the collection
    * @param docs documents to register
    */
-  def registerToCollection(collection: String, docs: Any*): Unit = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
+  def registerToCollection(collection: String, docs: Any*): UpdateResponse = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commitCollection(collection)
 
   /**
    * Delete the document which has a given id.
    *
    * @param id the identifier of the document to delete
    */
-  def deleteById(id: String): Unit = server.deleteById(id)
+  def deleteById(id: String): UpdateResponse = server.deleteById(id)
 
   /**
    * Delete the document which has a given id in the specified collection.
@@ -119,7 +139,7 @@ class SolrClient(url: String)
    * @param collection the name of the collection
    * @param id the identifier of the document to delete
    */
-  def deleteById(collection: String, id: String): Unit = server.deleteById(collection, id)
+  def deleteById(collection: String, id: String): UpdateResponse = server.deleteById(collection, id)
 
   /**
    * Delete documents by the given query.
@@ -127,7 +147,7 @@ class SolrClient(url: String)
    * @param query the solr query to select documents which would be deleted
    * @param params the parameter map which would be given to the query
    */
-  def deleteByQuery(query: String, params: Map[String, Any] = Map()): Unit = {
+  def deleteByQuery(query: String, params: Map[String, Any] = Map()): UpdateResponse = {
     server.deleteByQuery(new QueryTemplate(query).merge(params))
   }
 
@@ -138,18 +158,28 @@ class SolrClient(url: String)
    * @param query the solr query to select documents which would be deleted
    * @param params the parameter map which would be given to the query
    */
-  def deleteByQueryForCollection(collection: String, query: String, params: Map[String, Any] = Map()): Unit = {
+  def deleteByQueryForCollection(collection: String, query: String, params: Map[String, Any] = Map()): UpdateResponse = {
     server.deleteByQuery(collection, new QueryTemplate(query).merge(params))
   }
 
   /**
+    * Commit the current session on a specified collection
+    */
+  def commitToCollection(collection: String): UpdateResponse = server.commit(collection)
+  /**
    * Commit the current session.
    */
-  def commit(): Unit = server.commit
-  
+  def commit(): UpdateResponse = server.commit
+
+
+  /**
+    * Rolled back the current session on a collection
+    */
+  def rollbackCollection(collection: String): UpdateResponse = server.rollback(collection)
+
   /**
    * Rolled back the current session.
    */
-  def rollback(): Unit = server.rollback
+  def rollback(): UpdateResponse = server.rollback
 
 }

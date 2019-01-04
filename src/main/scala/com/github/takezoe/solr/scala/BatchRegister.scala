@@ -1,5 +1,6 @@
 package com.github.takezoe.solr.scala
 
+import org.apache.solr.client.solrj.response.UpdateResponse
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.common.SolrInputDocument
 
@@ -10,7 +11,7 @@ class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: 
   def add(docs: Any*): BatchRegister = {
     CaseClassMapper.toMapArray(docs: _*).foreach { doc =>
       val solrDoc = new SolrInputDocument
-      doc.map { case (key, value) =>
+      doc.collect { case (key, value) =>
         solrDoc.addField(key, value)
       }
       server.add(collection.orNull, solrDoc)
@@ -18,8 +19,10 @@ class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: 
     this
   }
 
-  def commit(): Unit = server.commit
+  def commit(): UpdateResponse = server.commit
 
-  def rollback(): Unit = server.rollback
+  def commitCollection(collection: String): UpdateResponse = server.commit(collection)
+
+  def rollback(): UpdateResponse = server.rollback
 
 }
