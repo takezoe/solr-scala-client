@@ -3,7 +3,7 @@ package com.github.takezoe.solr.scala
 import com.github.takezoe.solr.scala.query.{DefaultExpressionParser, ExpressionParser, QueryTemplate}
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient}
-import org.apache.solr.client.solrj.response.UpdateResponse
+import org.apache.solr.client.solrj.response.{SolrPingResponse, UpdateResponse}
 
 /**
  * This is the simple Apache Solr client for Scala.
@@ -48,15 +48,20 @@ class SolrClient(url: String)
   def withTransactionOnCollection[T](operations: => T, collection: String): T = {
     try {
       val result = operations
-      commitToCollection(collection)
+      commit(collection)
       result
     } catch {
       case t: Throwable => {
-        rollbackCollection(collection)
+        rollback(collection)
         throw t
       }
     }
   }
+
+  /**
+    * Check the status of the server
+    */
+  def ping: SolrPingResponse = server.ping()
 
   /**
    * Search documents using the given query.
@@ -124,7 +129,7 @@ class SolrClient(url: String)
    * @param collection the name of the collection
    * @param docs documents to register
    */
-  def registerToCollection(collection: String, docs: Any*): UpdateResponse = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commitCollection(collection)
+  def registerToCollection(collection: String, docs: Any*): UpdateResponse = new BatchRegister(server, Some(collection), CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit(collection)
 
   /**
    * Delete the document which has a given id.
@@ -165,7 +170,7 @@ class SolrClient(url: String)
   /**
     * Commit the current session on a specified collection
     */
-  def commitToCollection(collection: String): UpdateResponse = server.commit(collection)
+  def commit(collection: String): UpdateResponse = server.commit(collection)
   /**
    * Commit the current session.
    */
@@ -175,7 +180,7 @@ class SolrClient(url: String)
   /**
     * Rolled back the current session on a collection
     */
-  def rollbackCollection(collection: String): UpdateResponse = server.rollback(collection)
+  def rollback(collection: String): UpdateResponse = server.rollback(collection)
 
   /**
    * Rolled back the current session.

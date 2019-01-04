@@ -21,7 +21,7 @@ class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: 
 
   def commit(): UpdateResponse = server.commit
 
-  def commitCollection(collection: String): UpdateResponse = server.commit(collection)
+  def commit(collection: String): UpdateResponse = server.commit(collection)
 
   def rollback(): UpdateResponse = server.rollback
 
