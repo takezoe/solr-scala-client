@@ -4,8 +4,7 @@ import org.apache.solr.client.solrj.response.UpdateResponse
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.common.SolrInputDocument
 
-class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: Map[String, Any]*){
-
+class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: Map[String, Any]*) {
   add(docs: _*)
 
   def add(docs: Any*): BatchRegister = {
@@ -14,7 +13,10 @@ class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: 
       doc.collect { case (key, value) =>
         solrDoc.addField(key, value)
       }
-      server.add(collection.orNull, solrDoc)
+      collection match {
+        case Some(c) => server.add(c, solrDoc)
+        case None => server.add(solrDoc)
+      }
     }
     this
   }
