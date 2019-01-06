@@ -42,13 +42,10 @@ class SolrClient(url: String)
   /**
     * Execute given operation in the transaction to a collection
     *
-    * I'm not a huge fan of this function as you can still get an NPE, if your operations are not properly constructed.
-    * That said, support for the collection mode should be supported for all functionality.
-    *
     * The transaction is committed if operation was successful.
     * But the transaction is rolled back if an error occurred.
     */
-  def withTransactionOnCollection[T](operations: => T, collection: String): T = {
+  def withTransactionOnCollection[T](collection: String)(operations: => T): T = {
     try {
       val result = operations
       commit(collection)
