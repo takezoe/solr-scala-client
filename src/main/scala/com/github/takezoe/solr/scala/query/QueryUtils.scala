@@ -1,7 +1,7 @@
 package com.github.takezoe.solr.scala.query
 
 object QueryUtils {
-  
+
   private lazy val specialCharacters =
     Set('+', '-', '&', '|',  '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':')
 
@@ -19,5 +19,5 @@ object QueryUtils {
         case _ => Seq(c)
       }
     }.flatten.mkString
-    
+
 }

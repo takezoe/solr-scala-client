@@ -42,7 +42,7 @@ class AsyncQueryBuilder(httpClient: OkHttpClient, url: String, protected val que
       queryResponse.setResponse(namedList)
       success(queryResponse)
     }))
-    
+
     promise.future
   }
 

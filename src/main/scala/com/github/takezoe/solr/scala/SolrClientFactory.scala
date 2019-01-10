@@ -35,10 +35,10 @@ object SolrClientFactory {
 
     client
   }
-  
+
   /**
    * Provides the dummy HttpSolrClient for unit testing.
-   * 
+   *
    * {{{
    * implicit val solr = SolrClientFactory.dummy { request =>
    *   println(request.getMethod)

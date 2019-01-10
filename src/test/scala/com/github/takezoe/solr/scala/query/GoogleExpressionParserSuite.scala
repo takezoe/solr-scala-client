@@ -13,10 +13,10 @@ class GoogleExpressionParserSuite extends FunSuite {
     val result = new GoogleExpressionParser().parse("(AA BB OR CC -DD)")
     assert(result == ASTAnd(ASTOr(ASTAnd(ASTWord("AA"), ASTWord("BB")), ASTWord("CC")), ASTNot(ASTWord("DD"))))
   }
-  
+
   test("Test for quatation"){
     val result = new GoogleExpressionParser().parse("(\"AA & BB\" OR(\"(CC)\" - DD))")
     assert(result == ASTOr(ASTPhrase("AA & BB"), ASTAnd(ASTPhrase("(CC)"), ASTNot(ASTWord("DD")))))
   }
-  
+
 }

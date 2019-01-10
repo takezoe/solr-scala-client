@@ -1,6 +1,6 @@
 name := "solr-scala-client"
 
-organization := "com.github.takezoe"
+organization := "jeffdyke"
 
 version := "0.0.20"
 
@@ -21,15 +21,15 @@ libraryDependencies ++= Seq(
   "commons-logging"         % "commons-logging"          % "1.2"         % "runtime"
 )
 
-publishMavenStyle := true
+//publishMavenStyle := true
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (version.value.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
+//publishTo := {
+//  val nexus = "https://oss.sonatype.org/"
+//  if (version.value.trim.endsWith("SNAPSHOT"))
+//    Some("snapshots" at nexus + "content/repositories/snapshots")
+//  else
+//    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+//}
 
 scalacOptions := Seq("-deprecation", "-feature")
 
@@ -38,7 +38,7 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/takezoe/solr-scala-client</url>
+  <url>https://github.com/jeffdyke/solr-scala-client</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -46,13 +46,13 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>https://github.com/takezoe/solr-scala-client</url>
-    <connection>scm:git:https://github.com/takezoe/solr-scala-client.git</connection>
+    <url>https://github.com/jeffdyke/solr-scala-client</url>
+    <connection>scm:git:https://github.com/jeffdyke/solr-scala-client.git</connection>
   </scm>
   <developers>
     <developer>
-      <id>takezoe</id>
-      <name>Naoki Takezoe</name>
+      <id>jeffdyke</id>
+      <name>Jeff Dyke</name>
     </developer>
   </developers>
 )

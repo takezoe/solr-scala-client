@@ -13,10 +13,10 @@ class DefaultExpressionParserSuite extends FunSuite {
     val result = new DefaultExpressionParser().parse("(AA & BB | CC !DD)")
     assert(result == ASTAnd(ASTOr(ASTAnd(ASTWord("AA"), ASTWord("BB")), ASTWord("CC")), ASTNot(ASTWord("DD"))))
   }
-  
+
   test("Test for quatation"){
     val result = new DefaultExpressionParser().parse("(\"AA & BB\" |(\"(CC)\" !DD))")
     assert(result == ASTOr(ASTPhrase("AA & BB"), ASTAnd(ASTPhrase("(CC)"), ASTNot(ASTWord("DD")))))
   }
-  
+
 }
