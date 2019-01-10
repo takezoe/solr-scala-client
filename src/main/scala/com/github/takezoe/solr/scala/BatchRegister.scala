@@ -16,6 +16,8 @@ class BatchRegister(server: ApacheSolrClient, collection: Option[String], docs: 
       collection match {
         case Some(c) => server.add(c, solrDoc)
         case None => server.add(solrDoc)
+
+
       }
     }
     this
