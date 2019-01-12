@@ -31,7 +31,18 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
     val register = new BatchRegister(solr, None, Map("id" -> "123"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
-    verify(solr, times(1)).add(ArgumentMatchers.eq[String](null), captor.capture())
+    verify(solr, times(1)).add(captor.capture())
+
+    val doc = captor.getValue()
+    assert(doc.getField("id").getValue() == "123")
+  }
+
+  test("add a document via the constructor with collection."){
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr, Some("collection"), Map("id" -> "123"))
+
+    val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
+    verify(solr, times(1)).add(ArgumentMatchers.eq("collection"), captor.capture())
 
     val doc = captor.getValue()
     assert(doc.getField("id").getValue() == "123")
@@ -42,7 +53,21 @@ class BatchRegisterSuite extends FunSuite with MockitoSugar {
     val register = new BatchRegister(solr, None, Map("id" -> "123"), Map("id" -> "456"))
 
     val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
-    verify(solr, times(2)).add(ArgumentMatchers.eq[String](null), captor.capture())
+    verify(solr, times(2)).add(captor.capture())
+
+    val doc1 = captor.getAllValues().get(0)
+    assert(doc1.getField("id").getValue() == "123")
+
+    val doc2 = captor.getAllValues().get(1)
+    assert(doc2.getField("id").getValue() == "456")
+  }
+
+  test("add documents via the constructor with collection."){
+    val solr = mock[ApacheSolrClient]
+    val register = new BatchRegister(solr, Some("collection"), Map("id" -> "123"), Map("id" -> "456"))
+
+    val captor = ArgumentCaptor.forClass(classOf[SolrInputDocument])
+    verify(solr, times(2)).add(ArgumentMatchers.eq("collection"), captor.capture())
 
     val doc1 = captor.getAllValues().get(0)
     assert(doc1.getField("id").getValue() == "123")
