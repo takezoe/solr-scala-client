@@ -4,11 +4,11 @@ organization := "com.github.takezoe"
 
 version := "0.0.20"
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.8"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.7", "2.13.0-M5")
+crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0-M5")
 
 resolvers += Resolver.mavenLocal
 
