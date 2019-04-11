@@ -2,8 +2,6 @@ package com.github.takezoe.solr.scala.async
 
 import java.io.{ByteArrayOutputStream, InputStream}
 
-import scala.compat.Platform
-
 /**
  * @author steven
  *
@@ -36,7 +34,7 @@ class UpdatableInputStream extends InputStream {
                 Some(bytes)
             else {
                 val ret = new Array[Byte](max)
-                Platform.arraycopy(bytes, 0, ret, 0, max)
+                java.lang.System.arraycopy(bytes, 0, ret, 0, max)
                 baos.write(bytes, max, bytes.length - max)
                 Some(ret)
             }
@@ -58,9 +56,9 @@ class UpdatableInputStream extends InputStream {
             0
         else {
             dequeue(len) match {
-                case None ⇒ -1
-                case Some(bytes) ⇒
-                    Platform.arraycopy(bytes, 0, b, off, bytes.length)
+                case None => -1
+                case Some(bytes) =>
+                    java.lang.System.arraycopy(bytes, 0, b, off, bytes.length)
                     bytes.length
             }
         }
