@@ -40,7 +40,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     copy(newId = id)
   }
 
-  def collection(collection: String) = {
+  def collection(collection: String): Repr = {
     copy(newCollection = collection)
   }
 
@@ -211,7 +211,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
 
   protected def docToMap(doc: SolrDocument) = {
-    doc.getFieldNames.asScala.map { key ⇒ key → doc.getFieldValue(key) }.toMap
+    doc.getFieldNames.asScala.map { key => key -> doc.getFieldValue(key) }.toMap
   }
 
   protected def responseToMap(response: QueryResponse): MapQueryResult = {

@@ -76,7 +76,7 @@ private[scala] object CaseClassMapper {
     } else if(clazz == classOf[Float] || clazz == java.lang.Float.TYPE){
       0f
     } else if(clazz == classOf[Long] || clazz == java.lang.Long.TYPE){
-      0l
+      0L
     } else if(clazz == classOf[Char] || clazz == java.lang.Character.TYPE){
       '\u0000'
     } else if(clazz == classOf[Boolean] || clazz == java.lang.Boolean.TYPE){
