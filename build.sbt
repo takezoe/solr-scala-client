@@ -8,14 +8,14 @@ scalaVersion := "2.12.8"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0-RC1")
+crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0")
 
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   "org.apache.solr"         % "solr-solrj"               % "7.1.0",
   "com.squareup.okhttp3"    % "okhttp"                   % "3.9.1",
-  "org.scalatest"          %% "scalatest"                % "3.0.8-RC2" % "test",
+  "org.scalatest"          %% "scalatest"                % "3.0.8" % "test",
   "org.mockito"             % "mockito-core"             % "2.2.22"    % "test",
   "commons-logging"         % "commons-logging"          % "1.2"       % "runtime"
 )
