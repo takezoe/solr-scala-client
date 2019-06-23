@@ -148,7 +148,11 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
-### 0.0.20 - 13 Jun 2019
+### 0.0.21 - 22 Jun 2019
+
+* Scala 2.13.0 support
+
+### 0.0.20 - 13 Jan 2019
 
 * Scala 2.13.0-M5 support
 * Support specifying collection with transaction
