@@ -1,4 +1,4 @@
-solr-scala-client [![Build Status](https://travis-ci.org/takezoe/solr-scala-client.svg?branch=master)](https://travis-ci.org/takezoe/solr-scala-client) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.takezoe/solr-scala-client_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.takezoe/solr-scala-client_2.12)
+solr-scala-client [![Build Status](https://travis-ci.org/takezoe/solr-scala-client.svg?branch=master)](https://travis-ci.org/takezoe/solr-scala-client) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.takezoe/solr-scala-client_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.takezoe/solr-scala-client_2.12) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/takezoe/solr-scala-client/blob/master/LICENSE)
 =================
 
 The simple [Apache Solr](http://lucene.apache.org/solr/) client for Scala.
