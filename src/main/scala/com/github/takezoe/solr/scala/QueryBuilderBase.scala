@@ -284,12 +284,15 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
   /**
    * Added in response to #63 Missing spatial parameters while building solr query
-   * Sets Spatial field called pt.
-   * @param value : value for point , typically represent lat,long
+   * * Sets Spatial field called pt.
+   * @param lat
+   * @param lng
+   * @return
    */
-  def spatialPt(value: String): Repr = {
+  def spatialPt(lat: Double, lng: Double): Repr = {
     val ret = copy()
-    ret.solrQuery.set("pt",value)
+    val geoPoint = lat.toString+","+lng.toString
+    ret.solrQuery.set("pt",geoPoint)
     ret
   }
 
