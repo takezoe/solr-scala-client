@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.22 - 11 Dec 2019
+
+* Spatial parameters support
+
 ### 0.0.21 - 22 Jun 2019
 
 * Scala 2.13.0 support
