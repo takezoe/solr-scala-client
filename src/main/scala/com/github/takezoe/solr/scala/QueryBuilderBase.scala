@@ -281,4 +281,40 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     )
   }
 
+
+  /**
+   * Added in response to #63 Missing spatial parameters while building solr query
+   * * Sets Spatial field called pt.
+   * @param lat
+   * @param lng
+   * @return
+   */
+  def spatialPt(lat: Double, lng: Double): Repr = {
+    val ret = copy()
+    val geoPoint = lat.toString+","+lng.toString
+    ret.solrQuery.set("pt",geoPoint)
+    ret
+  }
+
+  /**
+   * Added in response to #63 Missing spatial parameters while building solr query
+   * Sets Spatial field named SField.
+   * @param value : value for Sfield.
+   */
+  def spatialSfield(value: String): Repr = {
+    val ret = copy()
+    ret.solrQuery.set("sfield",value)
+    ret
+  }
+
+  /**
+   * Added in response to #63 Missing spatial parameters while building solr query
+   * Enable Spatial is true.
+   */
+  def enableSpatial(): Repr = {
+    val ret = copy()
+    ret.solrQuery.set("spatial",true)
+    ret
+  }
+
 }
