@@ -1,7 +1,7 @@
 package com.github.takezoe.solr.scala
 
 import org.apache.solr.client.solrj.SolrQuery
-import org.apache.solr.client.solrj.response.QueryResponse
+import org.apache.solr.client.solrj.response.{PivotField, QueryResponse}
 import org.apache.solr.common.{SolrDocument, SolrDocumentList}
 import org.apache.solr.common.util.NamedList
 
@@ -314,6 +314,17 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   def enableSpatial(): Repr = {
     val ret = copy()
     ret.solrQuery.set("spatial",true)
+    ret
+  }
+
+  /**
+   * Sets facet pivot field names.
+   *
+   * @param pivotField field names
+   */
+  def facetPivotFields(pivotField: String*): Repr = {
+    val ret = copy()
+    ret.solrQuery.addFacetPivotField(pivotField: _*)
     ret
   }
 
