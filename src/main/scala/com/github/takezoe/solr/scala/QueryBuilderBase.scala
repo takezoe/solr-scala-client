@@ -317,6 +317,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret
   }
 
+
   /**
    * Sets facet pivot field names.
    *
