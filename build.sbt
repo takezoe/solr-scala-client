@@ -2,22 +2,22 @@ name := "solr-scala-client"
 
 organization := "com.github.takezoe"
 
-version := "0.0.22"
+version := "0.0.23"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.10"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0")
+crossScalaVersions := Seq("2.11.12", "2.12.10", "2.13.1")
 
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "org.apache.solr"         % "solr-solrj"               % "7.1.0",
-  "com.squareup.okhttp3"    % "okhttp"                   % "3.9.1",
-  "org.scalatest"          %% "scalatest"                % "3.0.8" % "test",
-  "org.mockito"             % "mockito-core"             % "2.2.22"    % "test",
-  "commons-logging"         % "commons-logging"          % "1.2"       % "runtime"
+  "org.apache.solr"         % "solr-solrj"               % "8.4.1",
+  "com.squareup.okhttp3"    % "okhttp"                   % "3.14.6",
+  "org.scalatest"          %% "scalatest"                % "3.1.1" % "test",
+  "org.mockito"             % "mockito-core"             % "3.3.0" % "test",
+  "commons-logging"         % "commons-logging"          % "1.2"   % "runtime"
 )
 
 libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)){

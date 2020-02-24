@@ -1,9 +1,9 @@
 package com.github.takezoe.solr.scala
 
 import com.github.takezoe.solr.scala.query.DefaultExpressionParser
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class QueryBuilderBaseSuite extends FunSuite {
+class QueryBuilderBaseSuite extends AnyFunSuite {
   
   test("copy"){
     implicit val parser = new DefaultExpressionParser()

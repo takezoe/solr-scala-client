@@ -1,8 +1,8 @@
 package com.github.takezoe.solr.scala.query
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class QueryTemplateSuite extends FunSuite {
+class QueryTemplateSuite extends AnyFunSuite {
 
   test("Test for parameter replacement"){
     implicit val parser = new DefaultExpressionParser()

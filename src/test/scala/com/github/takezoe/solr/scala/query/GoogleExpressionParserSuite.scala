@@ -1,8 +1,8 @@
 package com.github.takezoe.solr.scala.query
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class GoogleExpressionParserSuite extends FunSuite {
+class GoogleExpressionParserSuite extends AnyFunSuite {
 
   test("Test for implicit AND chain"){
     val result = new GoogleExpressionParser().parse("(AA BB CC)")

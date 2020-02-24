@@ -1,8 +1,8 @@
 package com.github.takezoe.solr.scala
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class CaseClassMapperSuite extends FunSuite {
+class CaseClassMapperSuite extends AnyFunSuite {
 
   test("map2class (Option is None)"){
     val employee = CaseClassMapper.map2class[Employee](Map("id" -> 1234, "name" -> "takezoe"))
