@@ -14,7 +14,7 @@ case class MapQueryResult(numFound: Long,
                           documents: List[DocumentMap],
                           groups: Map[String, List[Group]],
                           facetFields: Map[String, Map[String, Long]],
-                          facetPivots: Map[String, List[Pivot]],
+                          facetPivots: Map[String, List[FacetPivot]],
                           qTime: Int)
 
 /**
@@ -31,7 +31,7 @@ case class CaseClassQueryResult[T](numFound: Long,
 
 case class Group(value: String, numFound: Long, documents: List[DocumentMap])
 
-case class Pivot(field: String, count: Int, pivot: List[Pivot], value: String)
+case class FacetPivot(field: String, count: Int, pivot: List[FacetPivot], value: String)
 
 
 
