@@ -7,6 +7,7 @@ package com.github.takezoe.solr.scala
  * @param documents the list of documents which are matched to the query
  * @param groups the result of the grouped query which were specified by QueryBuilder#groupBy()
  * @param facetFields the facet count of fields which were specified by QueryBuilder#facetFields()
+  *@param facetPivots the facet pivot fields which were specified by QueryBuilder##facetPivots()
  */
 case class MapQueryResult(
     numFound: Long,
@@ -14,6 +15,7 @@ case class MapQueryResult(
     documents: List[DocumentMap],
     groups: Map[String, List[Group]],
     facetFields: Map[String, Map[String, Long]],
+    facetPivots: Map[String, List[FacetPivot]],
     qTime:Int)
 
 /**
@@ -33,3 +35,9 @@ case class Group(
     value: String,
     numFound: Long,
     documents: List[DocumentMap])
+
+case class FacetPivot(
+       field: String,
+       count: Int,
+       pivot: List[FacetPivot],
+       value: String)

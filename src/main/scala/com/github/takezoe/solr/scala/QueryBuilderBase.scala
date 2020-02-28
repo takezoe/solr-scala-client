@@ -266,7 +266,17 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
           field.getValues.asScala.map { value => (value.getName, value.getCount) }.toMap
       )}.toMap
     }
-    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,response.getQTime)
+    val facetPivotResult = response.getFacetPivot match {
+      case null => Map.empty[String, List[FacetPivot]]
+      case facetPivots =>
+        facetPivots.asScala.map { field =>
+          (
+            field.getKey,
+            field.getValue.asInstanceOf[List[FacetPivot]]
+          )
+        }.toMap
+    }
+    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,facetPivotResult,response.getQTime)
   }
 
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
