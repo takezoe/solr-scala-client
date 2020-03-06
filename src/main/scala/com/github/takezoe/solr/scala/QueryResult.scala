@@ -40,4 +40,4 @@ case class FacetPivot(
        field: String,
        count: Int,
        pivot: List[FacetPivot],
-       value: String)
+       value: Object)
