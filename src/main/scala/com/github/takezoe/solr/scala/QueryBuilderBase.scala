@@ -286,15 +286,15 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     * @param pivotFields
   **/
   def toFacetPivotList(pivotFields: java.util.List[PivotField]): List[FacetPivot] = {
-    if(pivotFields == null)
-      return null;
-    (for(i <- 0 to pivotFields.size - 1) yield {
-      val field = pivotFields.get(i).getField
-      val count = pivotFields.get(i).getCount
-      val pivot = toFacetPivotList(pivotFields.get(i).getPivot)
-      val value = pivotFields.get(i).getValue
+    if(pivotFields == null || pivotFields.isEmpty)
+      return List.empty[FacetPivot];
+    pivotFields.asScala.map { pivotField =>
+      val field = pivotField.getField
+      val count = pivotField.getCount
+      val pivot = toFacetPivotList(pivotField.getPivot)
+      val value = pivotField.getValue
       FacetPivot(field, count, pivot, value)
-    }).toList
+    }.toList
   }
 
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
