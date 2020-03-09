@@ -266,7 +266,35 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
           field.getValues.asScala.map { value => (value.getName, value.getCount) }.toMap
       )}.toMap
     }
-    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,response.getQTime)
+    val facetPivotResult = response.getFacetPivot match {
+      case null => Map.empty[String, List[FacetPivot]]
+      case facetPivots =>
+        facetPivots.asScala.map { field =>
+          (
+            field.getKey,
+            field.getValue.asScala.map { field =>
+              FacetPivot(field.getField, field.getCount, toFacetPivotList(field.getPivot), field.getValue)
+            }.toList
+          )
+        }.toMap
+    }
+    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,facetPivotResult,response.getQTime)
+  }
+
+  /**
+    * Convert java list of Pivot fields to scala list of facetPivots
+    * @param pivotFields
+  **/
+  def toFacetPivotList(pivotFields: java.util.List[PivotField]): List[FacetPivot] = {
+    if(pivotFields == null || pivotFields.isEmpty)
+      return List.empty[FacetPivot];
+    pivotFields.asScala.map { pivotField =>
+      val field = pivotField.getField
+      val count = pivotField.getCount
+      val pivot = toFacetPivotList(pivotField.getPivot)
+      val value = pivotField.getValue
+      FacetPivot(field, count, pivot, value)
+    }.toList
   }
 
   def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
