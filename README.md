@@ -7,7 +7,7 @@ This is based on the SolrJ and provides optimal interface for Scala.
 Add the following dependency into your `build.sbt` to use solr-scala-client.
 
 ```scala
-libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.23"
+libraryDependencies += "com.github.takezoe" %% "solr-scala-client" % "0.0.24"
 ```
 
 If you want to test SNAPSHOT version, add the following dependency instead of above:
@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.24 - 10 Mar 2020
+
+* Include facetpivot in mapquery result
+
 ### 0.0.23 - 24 Feb 2020
 
 * Facet Pivot Fields support

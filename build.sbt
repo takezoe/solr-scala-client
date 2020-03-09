@@ -2,7 +2,7 @@ name := "solr-scala-client"
 
 organization := "com.github.takezoe"
 
-version := "0.0.23"
+version := "0.0.24"
 
 scalaVersion := "2.12.10"
 
