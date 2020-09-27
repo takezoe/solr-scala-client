@@ -22,6 +22,7 @@ project/plugins/project/
 *.iml
 
 # Metals specific
+.vscode
 .bloop
 .metals
-project/metals.sbt
+**/project/metals.sbt
