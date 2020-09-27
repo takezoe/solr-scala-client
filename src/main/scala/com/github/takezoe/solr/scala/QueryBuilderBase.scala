@@ -210,14 +210,14 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     ret
   }
 
-  protected def docToMap(doc: SolrDocument) = {
+  protected def docToMap(doc: SolrDocument): DocumentMap = {
     doc.getFieldNames.asScala.map { key => key -> doc.getFieldValue(key) }.toMap
   }
 
   protected def responseToMap(response: QueryResponse): MapQueryResult = {
     val highlight = response.getHighlighting
 
-    def toList(docList: SolrDocumentList): List[Map[String, Any]] = {
+    def toList(docList: SolrDocumentList): List[DocumentMap] = {
       (for(i <- 0 to docList.size - 1) yield {
         val doc = docList.get(i)
         val map = docToMap(doc)
@@ -234,14 +234,14 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
       }).toList
     }
 
-    val (numFound: Long,numGroupsFound: Long, queryResult: List[DocumentMap], groupResult: Map[String, List[Group]]) = if(recommendFlag){
+    val (numFound, numGroupsFound, queryResult, groupResult) = if(recommendFlag){
       val mlt = response.getResponse.get("moreLikeThis").asInstanceOf[NamedList[Object]]
       val docs = mlt.getVal(0).asInstanceOf[java.util.List[SolrDocument]]
-      (response.getResults.getNumFound, docs.asScala.map(docToMap).toList, Map.empty)
+      (response.getResults.getNumFound, 0L, docs.asScala.map(docToMap).toList, Map.empty[String, List[Group]])
     } else {
       solrQuery.getParams("group") match {
         case null => {
-          (response.getResults.getNumFound,0L, toList(response.getResults), Map.empty)
+          (response.getResults.getNumFound, 0L, toList(response.getResults), Map.empty[String, List[Group]])
         }
         case _ => {
           var matches = 0L
@@ -254,7 +254,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
             }.toList
           }.toMap
 
-          (matches,groupMatches, List.empty, groupResult)
+          (matches, groupMatches, List.empty[DocumentMap], groupResult)
         }
       }
     }
@@ -278,7 +278,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
           )
         }.toMap
     }
-    MapQueryResult(numFound,numGroupsFound, queryResult, groupResult, facetResult,facetPivotResult,response.getQTime)
+    MapQueryResult(numFound, numGroupsFound, queryResult, groupResult, facetResult,facetPivotResult,response.getQTime)
   }
 
   /**

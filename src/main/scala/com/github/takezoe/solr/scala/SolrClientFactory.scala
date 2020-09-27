@@ -8,6 +8,7 @@ import org.apache.solr.client.solrj.impl.{HttpSolrClient => ApacheHttpSolrClient
 import org.apache.solr.client.solrj.impl.{CloudSolrClient => ApacheCloudSolrClient}
 import org.apache.solr.common._
 import org.apache.solr.common.util._
+import java.{util => ju}
 
 object SolrClientFactory {
 
@@ -65,7 +66,7 @@ object SolrClientFactory {
    * val client = new SolrClient("zkHost1,zkHost2,zkHost3:2182/solr")
    * }}}
    */
-  def cloud(): String => ApacheCloudSolrClient = (url: String) => (new ApacheCloudSolrClient.Builder).withZkHost(url).build()
+  def cloud(): String => ApacheCloudSolrClient = (url: String) => new ApacheCloudSolrClient.Builder(ju.Arrays.asList(url), ju.Optional.empty()).build()
 
   /**
    * Provides a client for CloudSolr with authentication.
@@ -80,7 +81,7 @@ object SolrClientFactory {
     val credentials = new UsernamePasswordCredentials(username, password)
     provider.setCredentials(AuthScope.ANY, credentials)
     val client = HttpClientBuilder.create.setDefaultCredentialsProvider(provider).build
-    (new ApacheCloudSolrClient.Builder).withZkHost(url).withHttpClient(client).build()
+    new ApacheCloudSolrClient.Builder(ju.Arrays.asList(url), ju.Optional.empty()).withHttpClient(client).build()
   }
 
 }
