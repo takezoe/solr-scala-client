@@ -17,6 +17,7 @@ libraryDependencies ++= Seq(
   "com.squareup.okhttp3"    % "okhttp"                   % "3.14.6",
   "org.scalatest"          %% "scalatest"                % "3.1.1" % "test",
   "org.mockito"             % "mockito-core"             % "3.3.0" % "test",
+  "org.testcontainers"      % "solr"                     % "1.14.3" % "test",
   "commons-logging"         % "commons-logging"          % "1.2"   % "runtime"
 )
 
