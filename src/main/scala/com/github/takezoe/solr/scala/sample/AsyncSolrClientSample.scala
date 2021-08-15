@@ -45,5 +45,5 @@ object AsyncSolrClientSample extends App {
   } yield ()
 
   Await.result(future, Duration.Inf)
-  client.shutdown
+  client.shutdown()
 }

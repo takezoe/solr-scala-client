@@ -1,11 +1,13 @@
 package com.github.takezoe.solr.scala.sample
 
 import com.github.takezoe.solr.scala.{Order, SolrClient, SolrClientFactory}
-import com.github.takezoe.solr.scala.query.GoogleExpressionParser
+import com.github.takezoe.solr.scala.query.{ExpressionParser, GoogleExpressionParser}
 
 object SolrClientSample extends App {
+  case class Product(id: String, manu: Option[String], name: String)
+  case class Param(name: String)
 
-  implicit val parser = new GoogleExpressionParser()
+  implicit val parser: ExpressionParser = new GoogleExpressionParser()
 //  implicit val solr = SolrClientFactory.dummy { request =>
 //    println(request.getMethod)
 //    println(request.getPath)
@@ -18,13 +20,13 @@ object SolrClientSample extends App {
 //    .add(Map("id"->"001", "manu" -> null, "name" -> "ThinkPad X201s"))
 //    .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X202"))
 //    .add(Map("id"->"003", "manu" -> "Lenovo", "name" -> "ThinkPad X100e"))
-//    .commit
+//    .commit()
 
   client
     .add(Product("001", None,           "ThinkPad X201s"))
     .add(Product("002", Some("Lenovo"), "ThinkPad X202"))
     .add(Product("003", Some("Lenovo"), "ThinkPad X100e"))
-    .commit
+    .commit()
 
   // query (Map) without facet search
   val result1 = client.query("name:?name?")
@@ -74,7 +76,3 @@ object SolrClientSample extends App {
   }
 
 }
-
-case class Product(id: String, manu: Option[String], name: String)
-
-case class Param(name: String)

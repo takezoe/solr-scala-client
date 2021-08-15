@@ -8,14 +8,14 @@ scalaVersion := "2.12.11"
 
 scalacOptions += "-feature"
 
-crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.1")
+crossScalaVersions := Seq("2.11.12", "2.12.11", "2.13.1", "3.0.1")
 
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   "org.apache.solr"         % "solr-solrj"               % "8.4.1",
   "com.squareup.okhttp3"    % "okhttp"                   % "3.14.6",
-  "org.scalatest"          %% "scalatest"                % "3.1.1" % "test",
+  "org.scalatest"          %% "scalatest"                % "3.2.9" % "test",
   "org.mockito"             % "mockito-core"             % "3.3.0" % "test",
   "org.testcontainers"      % "solr"                     % "1.16.0" % "test",
   "commons-logging"         % "commons-logging"          % "1.2"   % "runtime"
@@ -25,7 +25,7 @@ libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scal
   case Some((2, 11)) =>
     "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1"
   case _ =>
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.0.0"
 }.toList
 
 publishMavenStyle := true

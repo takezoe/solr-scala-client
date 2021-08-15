@@ -3,6 +3,8 @@ package com.github.takezoe.solr.scala
 import com.github.takezoe.solr.scala.query.{ExpressionParser, QueryTemplate}
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 
+import scala.reflect.ClassTag
+
 class QueryBuilder(server: ApacheSolrClient, query: String)(implicit parser: ExpressionParser)
   extends QueryBuilderBase[QueryBuilder] {
 
@@ -25,7 +27,7 @@ class QueryBuilder(server: ApacheSolrClient, query: String)(implicit parser: Exp
    * @param params the parameter map or case class which would be given to the query
    * @return the search result
    */
-  def getResultAs[T](params: Any = null)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
+  def getResultAs[T](params: Any = null)(implicit m: ClassTag[T]): CaseClassQueryResult[T] = {
     solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
     responseToObject[T](server.query(collection, solrQuery))
   }

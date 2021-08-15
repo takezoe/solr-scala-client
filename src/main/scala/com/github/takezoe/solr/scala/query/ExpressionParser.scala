@@ -13,18 +13,18 @@ trait ExpressionParser {
 class DefaultExpressionParser extends RegexParsers with ExpressionParser {
 
   def operator: Parser[AST] = chainl1(expression,
-      "&"^^{ op => (left, right) => ASTAnd(left, right)}|
-      "|"^^{ op => (left, right) => ASTOr(left, right)}|
-      ""^^{ op => (left, right) => ASTAnd(left, right)}
+      "&" ^^ { op => (left: AST, right: AST) => ASTAnd(left, right)} |
+      "|" ^^ { op => (left: AST, right: AST) => ASTOr(left, right)} |
+      ""  ^^ { op => (left: AST, right: AST) => ASTAnd(left, right)}
   )
 
-  def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
+  def expression: Parser[AST] = not | phrase | word | "(" ~> operator <~ ")"
 
-  def not: Parser[AST] = "!"~>expression^^ASTNot
+  def not: Parser[AST] = "!" ~> expression ^^ ASTNot
 
-  def word: Parser[AST] = """[^(|!& \t)]+""".r^^ASTWord
+  def word: Parser[AST] = """[^(|!& \t)]+""".r ^^ ASTWord
 
-  def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
+  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase
 
   def parse(str:String) = parseAll(expression, str).get
 
@@ -36,17 +36,17 @@ class DefaultExpressionParser extends RegexParsers with ExpressionParser {
 class GoogleExpressionParser extends RegexParsers with ExpressionParser {
 
   def operator: Parser[AST] = chainl1(expression,
-      "OR"^^{ op => (left, right) => ASTOr(left, right)}|
-      ""^^{ op => (left, right) => ASTAnd(left, right)}
+      "OR" ^^ { op => (left: AST, right: AST) => ASTOr(left, right)} |
+      ""   ^^ { op => (left: AST, right: AST) => ASTAnd(left, right)}
   )
 
-  def expression: Parser[AST] = not|phrase|word|"("~>operator<~")"
+  def expression: Parser[AST] = not | phrase | word | "(" ~> operator <~ ")"
 
-  def not: Parser[AST] = "-"~>expression^^ASTNot
+  def not: Parser[AST] = "-" ~> expression ^^ ASTNot
 
-  def word: Parser[AST] = """[^(\- \t)]+""".r^^ASTWord
+  def word: Parser[AST] = """[^(\- \t)]+""".r ^^ ASTWord
 
-  def phrase: Parser[AST] = "\""~>"""[^"]+""".r<~"\""^^ASTPhrase
+  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase
 
   def parse(str:String) = parseAll(expression, str).get
 

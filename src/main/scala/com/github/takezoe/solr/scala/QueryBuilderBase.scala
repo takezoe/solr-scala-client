@@ -6,6 +6,7 @@ import org.apache.solr.common.{SolrDocument, SolrDocumentList}
 import org.apache.solr.common.util.NamedList
 
 import scala.collection.JavaConverters._
+import scala.reflect.ClassTag
 
 trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
 
@@ -297,7 +298,7 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
     }.toList
   }
 
-  def responseToObject[T](response: QueryResponse)(implicit m: Manifest[T]): CaseClassQueryResult[T] = {
+  def responseToObject[T](response: QueryResponse)(implicit m: ClassTag[T]): CaseClassQueryResult[T] = {
     val result = responseToMap(response)
 
     CaseClassQueryResult[T](

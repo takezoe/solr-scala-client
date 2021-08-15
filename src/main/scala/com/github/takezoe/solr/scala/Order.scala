@@ -11,11 +11,11 @@ sealed trait Order {
 object Order {
 
   object asc extends Order {
-    override lazy val asEnum = ORDER.asc
+    override val asEnum = ORDER.asc
   }
 
   object desc extends Order {
-    override lazy val asEnum = ORDER.desc
+    override val asEnum = ORDER.desc
   }
 
   implicit def orderConverter(order: Order): ORDER = order.asEnum
