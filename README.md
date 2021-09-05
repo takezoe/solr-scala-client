@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.25 - 6 Sep 2021
+
+* Support Scala 3
+
 ### 0.0.24 - 10 Mar 2020
 
 * Include facetpivot in mapquery result
