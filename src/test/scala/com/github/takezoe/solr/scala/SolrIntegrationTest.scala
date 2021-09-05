@@ -21,7 +21,7 @@ class SolrIntegrationTest extends AnyFunSuite {
         .add(Map("id"->"001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"))
         .add(Map("id"->"002", "manu" -> "Lenovo", "name" -> "ThinkPad X220"))
         .add(Map("id"->"003", "manu" -> "Dell", "name" -> "XPS 13"))
-        .commit
+        .commit()
 
       // query as Map
       val result1 = client.query("name: %name%")
@@ -40,7 +40,7 @@ class SolrIntegrationTest extends AnyFunSuite {
       // register as case class
       client
         .add(PC("004", "Apple", "MacBook Pro"))
-        .commit
+        .commit()
       
       // query as case class
       val result2 = client.query("manu: %manu%")
