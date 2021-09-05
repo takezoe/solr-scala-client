@@ -20,11 +20,11 @@ class DefaultExpressionParser extends RegexParsers with ExpressionParser {
 
   def expression: Parser[AST] = not | phrase | word | "(" ~> operator <~ ")"
 
-  def not: Parser[AST] = "!" ~> expression ^^ ASTNot
+  def not: Parser[AST] = "!" ~> expression ^^ ASTNot.apply
 
-  def word: Parser[AST] = """[^(|!& \t)]+""".r ^^ ASTWord
+  def word: Parser[AST] = """[^(|!& \t)]+""".r ^^ ASTWord.apply
 
-  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase
+  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase.apply
 
   def parse(str:String) = parseAll(expression, str).get
 
@@ -42,11 +42,11 @@ class GoogleExpressionParser extends RegexParsers with ExpressionParser {
 
   def expression: Parser[AST] = not | phrase | word | "(" ~> operator <~ ")"
 
-  def not: Parser[AST] = "-" ~> expression ^^ ASTNot
+  def not: Parser[AST] = "-" ~> expression ^^ ASTNot.apply
 
-  def word: Parser[AST] = """[^(\- \t)]+""".r ^^ ASTWord
+  def word: Parser[AST] = """[^(\- \t)]+""".r ^^ ASTWord.apply
 
-  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase
+  def phrase: Parser[AST] = "\"" ~> """[^"]+""".r <~ "\"" ^^ ASTPhrase.apply
 
   def parse(str:String) = parseAll(expression, str).get
 

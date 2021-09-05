@@ -23,15 +23,15 @@ object AbstractAsyncQueryBuilder {
 abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: ExpressionParser)
     extends QueryBuilderBase[AbstractAsyncQueryBuilder] {
 
-    def getResultAsMap(params: Any = null): Future[MapQueryResult] = {
-        solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-        query(solrQuery, { response => responseToMap(response) })
-    }
+  def getResultAsMap(params: Any = null): Future[MapQueryResult] = {
+    solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
+    query(solrQuery, { response => responseToMap(response) })
+  }
 
-    def getResultAs[T](params: Any = null)(implicit m: Manifest[T]): Future[CaseClassQueryResult[T]] = {
-        solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
-        query(solrQuery, { response => responseToObject[T](response) })
-    }
+  def getResultAs[T](params: Any = null)(implicit m: Manifest[T]): Future[CaseClassQueryResult[T]] = {
+    solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
+    query(solrQuery, { response => responseToObject[T](response) })
+  }
 
   def streamResult(cb: StreamingCallback[DocumentMap], params: Any = null)(implicit ex: ExecutionContext): Future[Unit] = {
     solrQuery.setQuery(new QueryTemplate(query).merge(CaseClassMapper.toMap(params)))
@@ -73,7 +73,7 @@ abstract class AbstractAsyncQueryBuilder(query: String)(implicit parser: Express
 //      }, { response ⇒ responseToObject[T](response) })
 //    }
 
-    protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T]
+  protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T]
 
-    protected def stream(solrQuery: SolrParams, cb: StreamingResponseCallback)(implicit ex: ExecutionContext): Future[Unit]
+  protected def stream(solrQuery: SolrParams, cb: StreamingResponseCallback)(implicit ex: ExecutionContext): Future[Unit]
 }

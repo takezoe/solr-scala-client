@@ -16,21 +16,21 @@ import scala.collection.JavaConverters._
 class AsyncQueryBuilder(httpClient: OkHttpClient, url: String, protected val query: String)
                        (implicit parser: ExpressionParser) extends AbstractAsyncQueryBuilder(query) {
 
-    protected def createFormBody(solrQuery: SolrParams, parser: ResponseParser) = {
-      val formBuilder = new FormBody.Builder()
+  protected def createFormBody(solrQuery: SolrParams, parser: ResponseParser) = {
+    val formBuilder = new FormBody.Builder()
 
-      solrQuery.getParameterNamesIterator.asScala.foreach { name =>
-        formBuilder.add(name, solrQuery.get(name))
-      }
-      formBuilder.add(CommonParams.WT, parser.getWriterType)
-      formBuilder.add(CommonParams.VERSION, parser.getVersion)
-
-      formBuilder.build()
+    solrQuery.getParameterNamesIterator.asScala.foreach { name =>
+      formBuilder.add(name, solrQuery.get(name))
     }
+    formBuilder.add(CommonParams.WT, parser.getWriterType)
+    formBuilder.add(CommonParams.VERSION, parser.getVersion)
 
-    protected def createCopy = new AsyncQueryBuilder(httpClient, url, query)(parser)
+    formBuilder.build()
+  }
 
-    protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T] = {
+  protected def createCopy = new AsyncQueryBuilder(httpClient, url, query)(parser)
+
+  protected def query[T](solrQuery: SolrParams, success: QueryResponse => T): Future[T] = {
     val promise = Promise[T]()
 
     val parser = new XMLResponseParser
