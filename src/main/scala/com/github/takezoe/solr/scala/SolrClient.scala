@@ -139,7 +139,7 @@ class SolrClient(url: String)
    * See note about client instantiation in `add` documentation
    * @param docs documents to register
    */
-  def register(docs: Any*): UpdateResponse = new BatchRegister(server, None, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit
+  def register(docs: Any*): UpdateResponse = new BatchRegister(server, None, CaseClassMapper.toMapArray(docs: _*).toIndexedSeq: _*).commit()
 
   /**
    * Add documents and commit them immediately to the specified collection.

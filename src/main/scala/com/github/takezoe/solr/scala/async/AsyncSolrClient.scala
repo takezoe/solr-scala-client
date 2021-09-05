@@ -1,7 +1,5 @@
 package com.github.takezoe.solr.scala.async
 
-import java.net.URLEncoder
-
 import AsyncUtils.CallbackHandler
 import com.github.takezoe.solr.scala.query.{DefaultExpressionParser, ExpressionParser}
 import okhttp3._

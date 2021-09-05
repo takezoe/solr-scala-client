@@ -11,7 +11,7 @@ private[scala] object CaseClassMapper {
    * Converts the given Map[String, Any] to the case class.
    *
    */
-  def map2class[T](map: Map[String, Any])(implicit m: scala.reflect.Manifest[T]): T = {
+  def map2class[T](map: Map[String, Any])(implicit m: scala.reflect.ClassTag[T]): T = {
     val clazz = m.runtimeClass
 
     val constructor = clazz.getConstructors()(0)
