@@ -40,7 +40,7 @@ publishTo := {
 
 scalacOptions := Seq("-deprecation", "-feature")
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
