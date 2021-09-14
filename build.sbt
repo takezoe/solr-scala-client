@@ -24,6 +24,8 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)){
   case Some((2, 11)) =>
     "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1"
+  case Some((2, v)) if v >= 12 =>
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
   case _ =>
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.0.0"
 }.toList
