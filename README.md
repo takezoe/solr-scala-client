@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.26 - 14 Sep 2021
+
+* Fix scala-parser-combinators dependency
+
 ### 0.0.25 - 6 Sep 2021
 
 * Support Scala 3
