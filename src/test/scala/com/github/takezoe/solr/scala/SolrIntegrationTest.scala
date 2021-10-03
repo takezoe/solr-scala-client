@@ -41,7 +41,7 @@ class SolrIntegrationTest extends AnyFunSuite {
       client
         .add(PC("004", "Apple", "MacBook Pro"))
         .commit()
-      
+
       // query as case class
       val result2 = client.query("manu: %manu%")
         .fields("id", "manu", "name")
@@ -55,6 +55,29 @@ class SolrIntegrationTest extends AnyFunSuite {
       // verify
       assert(expect2 == result2.documents)
 
+      // register as case class
+      client
+        .add(PC("005", "Microsoft", "Surface Pro 7"))
+        .commit()
+
+      // query with new sort
+      val result3 = client.query("*:*")
+        .fields("id", "manu", "name")
+        .sortBy(Vector(
+          ("manu", Order.asc),
+          ("id", Order.asc)
+        ))
+        .getResultAs[PC](null)
+
+      val expect3 = List(
+        PC("004", "Apple", "MacBook Pro"),
+        PC("003", "Dell", "XPS 13"),
+        PC("001", "Lenovo", "ThinkPad X201s"),
+        PC("002", "Lenovo", "ThinkPad X220"),
+        PC("005", "Microsoft", "Surface Pro 7")
+      )
+
+      assert(expect3 == result3.documents)
     } finally {
       container.stop()
     }
