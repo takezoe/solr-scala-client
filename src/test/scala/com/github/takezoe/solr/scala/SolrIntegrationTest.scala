@@ -63,10 +63,10 @@ class SolrIntegrationTest extends AnyFunSuite {
       // query with new sort
       val result3 = client.query("*:*")
         .fields("id", "manu", "name")
-        .sortBy(Vector(
+        .sortBy(
           ("manu", Order.asc),
           ("id", Order.asc)
-        ))
+        )
         .getResultAs[PC](null)
 
       val expect3 = List(
