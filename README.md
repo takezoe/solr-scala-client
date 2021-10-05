@@ -148,6 +148,10 @@ See more example at [AsyncSolrClientSample.scala](https://github.com/takezoe/sol
 
 Release Notes
 -------------
+### 0.0.27 - 5 Oct 2021
+
+* Add sortBy overload for multiple sorting fields
+
 ### 0.0.26 - 14 Sep 2021
 
 * Fix scala-parser-combinators dependency
