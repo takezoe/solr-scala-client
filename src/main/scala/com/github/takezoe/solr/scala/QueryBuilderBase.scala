@@ -94,6 +94,18 @@ trait QueryBuilderBase[Repr <: QueryBuilderBase[Repr]] {
   }
 
   /**
+   * Sets multiple sorting field names and orders.
+   *
+   * @param sortClauses fields and orders upon which to sort
+   */
+  def sortBy(sortClauses: (String, Order)*): Repr = {
+    val ret = copy()
+    val sorts = sortClauses.map(pair => new SolrQuery.SortClause(pair._1, pair._2)).toList.asJava
+    ret.solrQuery.setSorts(sorts)
+    ret
+  }
+
+  /**
    * Sets grouping field names.
    *
    * @param fields field names
