@@ -4,9 +4,10 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        scala: [2.11.12, 2.12.11, 2.13.1, 3.0.1]
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
@@ -14,9 +15,9 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Run tests
-      run: sbt +test
-    - name: Publish Test Report
+    - name: Run tests (Scala ${{ matrix.scala }})
+      run: sbt '++ ${{ matrix.scala }}' test
+    - name: Publish Test Report (Scala ${{ matrix.scala }})
       uses: mikepenz/action-junit-report@v2
       if: always() # always run even if the previous step fails
       with:
