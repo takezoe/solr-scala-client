@@ -13,20 +13,20 @@ object AsyncSolrClientSample extends App {
   val client = new AsyncSolrClient("http://localhost:8983/solr")
 
   val f1 = client.register(Map("id" -> "005", "name" -> "ThinkPad X1 Carbon", "manu" -> "Lenovo"))
-  
+
   val f2 = client.withTransaction {
     for {
         _ <- client.add(Map("id" -> "006", "name" -> "Nexus7 2012", "manu" -> "ASUS"))
         _ <- client.add(Map("id" -> "007", "name" -> "Nexus7 2013", "manu" -> "ASUS"))
     } yield ()
   }
-  
+
   val f3 = client.query("name:%name%")
         .fields("id", "manu", "name")
         .facetFields("manu")
         .sortBy("id", Order.asc)
         .getResultAsMap(Map("name" -> "ThinkPad X201s"))
-            
+
   f3.onComplete {
     case Success(result) => {
       println("count: " + result.numFound)

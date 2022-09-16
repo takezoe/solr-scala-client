@@ -40,7 +40,7 @@ object SolrClientSample extends App {
     println("  manu: " + doc.get("manu").getOrElse("<NULL>"))
     println("  name: " + doc("name"))
   }
-    
+
   // query (Map) with facet search
   val result2 = client.query("name:%name%")
         .fields("id", "manu", "name")

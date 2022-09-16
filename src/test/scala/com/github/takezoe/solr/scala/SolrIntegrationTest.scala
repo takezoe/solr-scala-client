@@ -33,7 +33,7 @@ class SolrIntegrationTest extends AnyFunSuite {
 
       val expect1 = List(
         Map("id" -> "001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"),
-        Map("id" -> "003", "manu" -> "Lenovo", "name" -> "ThinkPad X220")
+        Map("id" -> "002", "manu" -> "Lenovo", "name" -> "ThinkPad X220")
       )
 
       // verify
@@ -49,7 +49,7 @@ class SolrIntegrationTest extends AnyFunSuite {
         .fields("id", "manu", "name")
         .sortBy("id", Order.asc)
         .getResultAs[PC](Map("manu" -> "Apple"))
-      
+
       val expect2 = List(
         PC("004", "Apple", "MacBook Pro")
       )

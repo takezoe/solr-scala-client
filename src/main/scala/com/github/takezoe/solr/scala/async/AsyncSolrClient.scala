@@ -17,7 +17,7 @@ object ContentTypes {
 class AsyncSolrClient(url: String, factory: () => OkHttpClient = { () => new OkHttpClient() })
     (implicit protected val parser: ExpressionParser = new DefaultExpressionParser())
     extends IAsyncSolrClient {
-  
+
   private val httpClient: OkHttpClient = factory()
   private val normalizedUrl = if(url.endsWith("/")) url.substring(0, url.length - 1) else url
 
@@ -34,7 +34,7 @@ class AsyncSolrClient(url: String, factory: () => OkHttpClient = { () => new OkH
     req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true)
     execute(httpClient, req, Promise[Unit]())
   }
-  
+
   /**
    * Rolled back the current session.
    */
@@ -58,7 +58,7 @@ class AsyncSolrClient(url: String, factory: () => OkHttpClient = { () => new OkH
    * Returns the result of asynchronous request to the future world via given Promise.
    */
   private def execute(httpClient: OkHttpClient, req: UpdateRequest, promise: Promise[Unit]): Future[Unit] = {
-    
+
     //val builder = httpClient.preparePost(normalizedUrl + "/update")
     val builder = new Request.Builder().url(normalizedUrl + "/update")
 
@@ -87,5 +87,5 @@ class AsyncSolrClient(url: String, factory: () => OkHttpClient = { () => new OkH
 
     promise.future
   }
-  
+
 }

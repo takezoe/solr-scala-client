@@ -29,7 +29,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(employee.`emp-name` == "takezoe")
     assert(employee.email == Some("takezoe@gmail.com"))
   }
-  
+
   test("class2map (Option is None)".withScalaVersion){
     val map = CaseClassMapper.class2map(Employee(5678, "takezoe", None))
 
