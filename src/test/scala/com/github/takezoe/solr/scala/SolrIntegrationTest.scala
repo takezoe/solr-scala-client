@@ -1,12 +1,14 @@
 package com.github.takezoe.solr.scala
 
-import org.scalatest.funsuite.AnyFunSuite
 import org.testcontainers.containers.SolrContainer
 import java.{util => ju}
+import org.scalatest.funsuite.AnyFunSuite
+
+import com.github.takezoe.solr.scala.TestUtils._
 
 class SolrIntegrationTest extends AnyFunSuite {
 
-  test("Integration test"){
+  test("Integration test".withScalaVersion){
     val container = new SolrContainer()
         .withCollection("pc")
         .withConfiguration("pc", getClass().getResource("/solrconfig.xml"))
@@ -31,7 +33,7 @@ class SolrIntegrationTest extends AnyFunSuite {
 
       val expect1 = List(
         Map("id" -> "001", "manu" -> "Lenovo", "name" -> "ThinkPad X201s"),
-        Map("id" -> "002", "manu" -> "Lenovo", "name" -> "ThinkPad X220")
+        Map("id" -> "003", "manu" -> "Lenovo", "name" -> "ThinkPad X220")
       )
 
       // verify

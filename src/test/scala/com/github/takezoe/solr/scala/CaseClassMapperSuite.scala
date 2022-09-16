@@ -2,9 +2,11 @@ package com.github.takezoe.solr.scala
 
 import org.scalatest.funsuite.AnyFunSuite
 
+import com.github.takezoe.solr.scala.TestUtils._
+
 class CaseClassMapperSuite extends AnyFunSuite {
 
-  test("map2class (Option is None)"){
+  test("map2class (Option is None)".withScalaVersion){
     val employee = CaseClassMapper.map2class[Employee](Map("id" -> 1234, "name" -> "takezoe"))
 
     assert(employee.id == 1234)
@@ -12,7 +14,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(employee.email == None)
   }
 
-  test("map2class (Option is Some)"){
+  test("map2class (Option is Some)".withScalaVersion){
     val employee = CaseClassMapper.map2class[Employee](Map("id" -> 1234, "name" -> "takezoe", "email" -> "takezoe@gmail.com"))
 
     assert(employee.id == 1234)
@@ -20,7 +22,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(employee.email == Some("takezoe@gmail.com"))
   }
 
-  test("map2class (property name contains '-')"){
+  test("map2class (property name contains '-')".withScalaVersion){
     val employee = CaseClassMapper.map2class[Employee2](Map("emp-id" -> 1234, "emp-name" -> "takezoe", "email" -> "takezoe@gmail.com"))
 
     assert(employee.`emp-id` == 1234)
@@ -28,7 +30,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(employee.email == Some("takezoe@gmail.com"))
   }
   
-  test("class2map (Option is None)"){
+  test("class2map (Option is None)".withScalaVersion){
     val map = CaseClassMapper.class2map(Employee(5678, "takezoe", None))
 
     assert(map("id") == 5678)
@@ -36,7 +38,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(map("email") == null)
   }
 
-  test("class2map (Option is Some)"){
+  test("class2map (Option is Some)".withScalaVersion){
     val map = CaseClassMapper.class2map(Employee(5678, "takezoe", Some("takezoe@gmail.com")))
 
     assert(map("id") == 5678)
@@ -44,7 +46,7 @@ class CaseClassMapperSuite extends AnyFunSuite {
     assert(map("email") == "takezoe@gmail.com")
   }
 
-  test("class2map (property name contains '-')"){
+  test("class2map (property name contains '-')".withScalaVersion){
     val map = CaseClassMapper.class2map(Employee2(5678, "takezoe", Some("takezoe@gmail.com")))
 
     assert(map("emp-id") == 5678)

@@ -3,9 +3,11 @@ package com.github.takezoe.solr.scala
 import com.github.takezoe.solr.scala.query.DefaultExpressionParser
 import org.scalatest.funsuite.AnyFunSuite
 
+import com.github.takezoe.solr.scala.TestUtils._
+
 class QueryBuilderBaseSuite extends AnyFunSuite {
   
-  test("copy"){
+  test("copy".withScalaVersion){
     implicit val parser = new DefaultExpressionParser()
     val queryBuilder = new TestQueryBuilder()
     val copied = queryBuilder.id("contentId")
