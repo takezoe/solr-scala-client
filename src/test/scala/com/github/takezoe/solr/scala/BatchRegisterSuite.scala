@@ -3,13 +3,16 @@ package com.github.takezoe.solr.scala
 import org.apache.solr.client.solrj.{SolrClient => ApacheSolrClient}
 import org.apache.solr.common.SolrInputDocument
 import org.mockito.ArgumentCaptor
-import org.scalatest.funsuite.AnyFunSuite
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers
 
+import org.scalatest.funsuite.AnyFunSuite
+
+import com.github.takezoe.solr.scala.TestUtils._
+
 class BatchRegisterSuite extends AnyFunSuite {
 
-  test("commit calls SolrServer#commit."){
+  test("commit calls SolrServer#commit.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, None)
     register.commit()
@@ -17,7 +20,7 @@ class BatchRegisterSuite extends AnyFunSuite {
     verify(solr, times(1)).commit()
   }
 
-  test("rollback calls SolrServer#commit."){
+  test("rollback calls SolrServer#commit.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, None)
     register.rollback()
@@ -25,7 +28,7 @@ class BatchRegisterSuite extends AnyFunSuite {
     verify(solr, times(1)).rollback()
   }
 
-  test("add a document via the constructor."){
+  test("add a document via the constructor.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, None, Map("id" -> "123"))
 
@@ -36,7 +39,7 @@ class BatchRegisterSuite extends AnyFunSuite {
     assert(doc.getField("id").getValue() == "123")
   }
 
-  test("add a document via the constructor with collection."){
+  test("add a document via the constructor with collection.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, Some("collection"), Map("id" -> "123"))
 
@@ -47,7 +50,7 @@ class BatchRegisterSuite extends AnyFunSuite {
     assert(doc.getField("id").getValue() == "123")
   }
 
-  test("add documents via the constructor."){
+  test("add documents via the constructor.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, None, Map("id" -> "123"), Map("id" -> "456"))
 
@@ -61,7 +64,7 @@ class BatchRegisterSuite extends AnyFunSuite {
     assert(doc2.getField("id").getValue() == "456")
   }
 
-  test("add documents via the constructor with collection."){
+  test("add documents via the constructor with collection.".withScalaVersion){
     val solr = mock(classOf[ApacheSolrClient])
     val register = new BatchRegister(solr, Some("collection"), Map("id" -> "123"), Map("id" -> "456"))
 

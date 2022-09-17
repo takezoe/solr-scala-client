@@ -30,6 +30,10 @@ libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scal
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.0.0"
 }.toList
 
+enablePlugins(BuildInfoPlugin)
+
+testOptions += Tests.Argument("-u", "target/test-reports/" + scalaBinaryVersion.value)
+
 publishMavenStyle := true
 
 publishTo := {
