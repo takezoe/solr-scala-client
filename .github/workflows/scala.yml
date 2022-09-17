@@ -22,4 +22,5 @@ jobs:
       with:
         report_paths: './target/test-reports/*/TEST-*.xml'
         detailed_summary: true
+        include_passed: true
 
